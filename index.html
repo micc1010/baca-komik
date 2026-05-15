@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KomikIndo Clone - Baca Manga Online</title>
+    <style>
+        :root {
+            --primary: #ff5722; 
+            --bg-dark: #0f1016;
+            --card-bg: #1a1c29;
+            --text-main: #ffffff;
+            --text-muted: #a4b0be;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); }
+
+        header {
+            background-color: rgba(15, 16, 22, 0.95);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        header h1 { color: var(--primary); font-size: 24px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; }
+
+        .search-container { position: relative; width: 300px; }
+        .search-container input {
+            width: 100%; padding: 10px 15px; background: #222533;
+            border: 1px solid #33384f; border-radius: 20px; color: white; outline: none;
+        }
+
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+
+        .ad-space {
+            width: 100%; min-height: 90px; background: #222; margin-bottom: 30px;
+            display: flex; align-items: center; justify-content: center;
+            color: #555; border-radius: 8px; border: 1px dashed #444;
+        }
+
+        /* Katalog Utama */
+        .comic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .comic-card { background: var(--card-bg); border-radius: 10px; overflow: hidden; cursor: pointer; transition: 0.3s; }
+        .comic-card:hover { transform: scale(1.05); }
+        .comic-poster { width: 100%; height: 260px; object-fit: cover; }
+        .comic-info { padding: 12px; }
+
+        /* Halaman Detail */
+        .page-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0c10; z-index: 2000; padding: 20px; overflow-y: auto; }
+        .page-content { max-width: 800px; margin: 20px auto; background: var(--card-bg); padding: 25px; border-radius: 12px; }
+
+        .btn-back { background: #333; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+        .btn-back:hover { background: #555; }
+
+        .episode-list { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .episode-item { background: #222533; padding: 12px; border-radius: 6px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 14px; }
+        .episode-item:hover { background: var(--primary); }
+
+        /* Area Membaca Gambar Mengalir */
+        .reader-container { max-width: 700px; margin: 0 auto; text-align: center; }
+        .comic-image-wrapper { width: 100%; background: #000; }
+        .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; }
+
+        .btn-next-chapter { display: block; width: 100%; padding: 18px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; margin: 30px 0; cursor: pointer; text-align: center; }
+        .btn-next-chapter:hover { background: #e64a19; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 onclick="goHome()">KomikIndo Web</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="searchComic()" placeholder="Cari komik...">
+        </div>
+    </header>
+
+    <!-- Halaman Utama -->
+    <div class="container" id="mainMenu">
+        <div class="ad-space">
+            <!-- MASUKKAN SCRIPT BANNER ADSTERRA DI SINI -->
+            Iklan Banner Adsterra 728x90
+        </div>
+        <h2 style="margin-bottom: 20px;">Update Manga Terbaru</h2>
+        <div class="comic-grid" id="comicList"></div>
+    </div>
+
+    <!-- Halaman Detail Komik -->
+    <div id="detailPage" class="page-overlay">
+        <div class="page-content">
+            <button class="btn-back" onclick="changePage('detailPage', 'mainMenu')">← Kembali ke Utama</button>
+            <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Judul Komik</h2>
+            <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;"></p>
+            
+            <h3>Pilih Chapter:</h3>
+            <div class="episode-list" id="episodeListArea"></div>
+        </div>
+    </div>
+
+    <!-- Halaman Pembaca Online (Gaya Komikindo) -->
+    <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;">
+        <div style="padding: 20px; max-width: 700px; margin: 0 auto;">
+            <button class="btn-back" onclick="changePage('readerPage', 'detailPage')">← Daftar Chapter</button>
+        </div>
+
+        <div class="reader-container">
+            <!-- Gambar komik akan dimuat di sini secara berurutan ke bawah -->
+            <div class="comic-image-wrapper" id="comicViewerArea"></div>
+            
+            <div style="padding: 0 20px;">
+                <button id="nextChapterBtn" class="btn-next-chapter">Lanjut ke Chapter Selanjutnya →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DATABASE HUBUNGAN GAMBAR DIRECT LINK
+        const comics = [
+            {
+                id: 1,
+                title: "One Piece Remastered",
+                poster: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=400", // Ganti link gambar poster asli
+                desc: "Kisah petualangan Monkey D. Luffy untuk menjadi Raja Bajak Laut di seluruh lautan.",
+                direct: "https://google.com", // MASUKKAN DIRECT LINK ADSTERRA ANDA DI SINI
+                chapters: [
+                    {
+                        chNum: 1,
+                        title: "Ch. 01",
+                        images: [
+                            // Tempelkan URL gambar halaman komik yang sudah Anda upload ke penampung gambar
+                            "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=700",
+                            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700",
+                            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=700"
+                        ]
+                    },
+                    {
+                        chNum: 2,
+                        title: "Ch. 02",
+                        images: [
+                            "https://images.unsplash.com/photo-1614850523060-8da1d56ae167?w=700",
+                            "https://images.unsplash.com/photo-1618005198143-e5283b519a7f?w=700"
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentComicId = null;
+
+        function displayComics(data) {
+            const list = document.getElementById('comicList');
+            list.innerHTML = data.map(c => `
+                <div class="comic-card" onclick="openDetail(${c.id})">
+                    <img src="${c.poster}" class="comic-poster">
+                    <div class="comic-info">
+                        <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${c.chapters.length} Bab</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openDetail(id) {
+            const comic = comics.find(c => c.id === id);
+            currentComicId = id;
+            
+            document.getElementById('detailTitle').innerText = comic.title;
+            document.getElementById('detailDesc').innerText = comic.desc;
+            
+            const epListArea = document.getElementById('episodeListArea');
+            epListArea.innerHTML = comic.chapters.map(ch => `
+                <div class="episode-item" onclick="loadChapter(${ch.chNum})">
+                    ${ch.title}
+                </div>
+            `).join('');
+
+            changePage('mainMenu', 'detailPage');
+        }
+
+        function loadChapter(chNum) {
+            const comic = comics.find(c => c.id === currentComicId);
+            const chapter = comic.chapters.find(ch => ch.chNum === chNum);
+            
+            const viewer = document.getElementById('comicViewerArea');
+            // Menampilkan loading sederhana sebelum gambar termuat penuh
+            viewer.innerHTML = `<p style="padding:20px; color:#fff;">Memuat halaman...</p>`;
+            
+            // Render gambar mengalir ke bawah seperti Komikindo
+            viewer.innerHTML = chapter.images.map(imgUrl => `
+                <img src="${imgUrl}" class="comic-page-img" loading="lazy" alt="Halaman Komik">
+            `).join('');
+
+            const nextBtn = document.getElementById('nextChapterBtn');
+            const hasNext = comic.chapters.some(ch => ch.chNum === chNum + 1);
+
+            if (hasNext) {
+                nextBtn.innerText = `Lanjut Chapter ${chNum + 1} →`;
+                nextBtn.onclick = function() {
+                    // Eksekusi monetisasi Adsterra
+                    window.open(comic.direct, '_blank'); 
+                    
+                    // Alihkan ke chapter selanjutnya setelah pop-under terbuka
+                    setTimeout(() => {
+                        loadChapter(chNum + 1);
+                        document.getElementById('readerPage').scrollTo(0,0);
+                    }, 200);
+                };
+                nextBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'none';
+            }
+
+            changePage('detailPage', 'readerPage');
+        }
+
+        function changePage(fromId, toId) {
+            document.getElementById(fromId).style.display = 'none';
+            document.getElementById(toId).style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function goHome() {
+            document.getElementById('detailPage').style.display = 'none';
+            document.getElementById('readerPage').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+        }
+
+        function searchComic() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            displayComics(comics.filter(c => c.title.toLowerCase().includes(q)));
+        }
+
+        displayComics(comics);
+    </script>
+</body>
+</html>
