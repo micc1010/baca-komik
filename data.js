@@ -11,7 +11,7 @@ const comics = [
                 chNum: 1,
                 title: "Ch. 01: Petualangan Dimulai",
                 images: [
-                    "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=700",
+                    "https://imgur.com/a/pck2b2H",
                     "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700"
                 ]
             },
