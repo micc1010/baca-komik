@@ -12,7 +12,9 @@ const comics = [
                 title: "Ch. 01",
                 images: [
                     "https://i.imgur.com/IHsfaWQ.png",
-                    "https://i.imgur.com/a8olAmo.png"
+                    "https://i.imgur.com/a8olAmo.png",
+                    "https://i.imgur.com/eI0xkkZ.png",
+                    "https://i.imgur.com/BeEnPCp.png"
                 ]
             },
             {
