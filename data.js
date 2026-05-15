@@ -9,10 +9,10 @@ const comics = [
         chapters: [
             {
                 chNum: 1,
-                title: "Ch. 01: Petualangan Dimulai",
+                title: "Ch. 01",
                 images: [
-                    "https://i.imgur.com/zBMWk8C.png",
-                    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=700"
+                    "https://i.imgur.com/IHsfaWQ.png",
+                    "https://i.imgur.com/a8olAmo.png"
                 ]
             },
             {
