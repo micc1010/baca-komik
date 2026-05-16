@@ -14,6 +14,6 @@ const comics = [
         poster: "https://i.imgur.com/xKVmzM3.png",
         desc: "Di dunia di mana para pemburu bertarung melawan makhluk dari dunia lain melalui portal misterius, Sung Jinwoo adalah pemburu dengan kekuatan yang sangat lemah. Perjalanannya untuk menjadi pemburu terkuat membawa banyak tantangan serta intrik, termasuk menghadapi organisasi rahasia.",
         direct: "https://google.com", // Link Adsterra Anda
-        totalChapters: 2
+        totalChapters: 180
     }
 ];

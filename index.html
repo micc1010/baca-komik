@@ -62,7 +62,6 @@
         .comic-image-wrapper { width: 100%; background: #000; }
         .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; }
 
-        /* MODIFIKASI NAVIGASI BARU */
         .nav-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 20px; max-width: 700px; margin: 0 auto; }
         .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; color: #fff; text-align: center; transition: 0.2s; }
         .btn-prev { background: #33384f; }
@@ -168,42 +167,36 @@
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
-            // 1. Tampilkan Gambar Manga
+            // Tampilkan Gambar Manga
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = `<p style="padding:20px; color:#fff;">Memuat halaman...</p>`;
             viewer.innerHTML = chapter.images.map(imgUrl => `
                 <img src="${imgUrl}" class="comic-page-img" loading="lazy" alt="Halaman Komik">
             `).join('');
 
-            // 2. Cek Ketersediaan Chapter Navigasi
+            // Cek Ketersediaan Chapter Navigasi
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            // 3. Buat Struktur HTML Tombol Navigasi
-            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="triggerChapter(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
-            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="triggerAdAndNext(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
+            // Buat Struktur HTML Tombol Navigasi (Kedua tombol sekarang memanggil fungsi Iklan)
+            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="triggerAdAndGo(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
+            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="triggerAdAndGo(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
-            // 4. Pasang Navigasi ke Atas dan Bawah Sekaligus
+            // Pasang Navigasi ke Atas dan Bawah Sekaligus
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
 
             changePage('detailPage', 'readerPage');
         }
 
-        // Fungsi pembantu untuk tombol "Prev" agar langsung memuat chapter sebelumnya tanpa iklan
-        function triggerChapter(targetCh) {
-            loadChapter(targetCh);
-            document.getElementById('readerPage').scrollTo(0,0);
-        }
-
-        // Fungsi pembantu untuk tombol "Next" agar memicu Pop-Under Adsterra terlebih dahulu baru pindah chapter
-        function triggerAdAndNext(targetCh) {
+        // Fungsi Tunggal untuk memicu Iklan Direct Link Adsterra lalu berpindah chapter (Berlaku untuk Next & Prev)
+        function triggerAdAndGo(targetCh) {
             const comic = comics.find(c => c.id === currentComicId);
             window.open(comic.direct, '_blank'); // Membuka Direct Link Adsterra di tab baru
             
             setTimeout(() => {
                 loadChapter(targetCh);
-                document.getElementById('readerPage').scrollTo(0,0); // Reset scroll ke paling atas
+                document.getElementById('readerPage').scrollTo(0,0); // Reset scroll ke paling atas halaman
             }, 200);
         }
 
