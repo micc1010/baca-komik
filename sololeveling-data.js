@@ -441,10 +441,12 @@ const chapters_sololeveling = [
 			"https://i.imgur.com/37Ir7sj.jpeg",
 			"https://i.imgur.com/O6vzuMc.jpeg",
 			"https://i.imgur.com/fsnCAi6.jpeg",
+			"https://i.imgur.com/8axpIOQ.jpeg",
 			"https://i.imgur.com/5p3Q5TB.jpeg",
 			"https://i.imgur.com/MaYyjoM.jpeg",
 			"https://i.imgur.com/LWUI0RA.jpeg",
 			"https://i.imgur.com/GkeONnU.jpeg",
+			"https://i.imgur.com/kxtTJmu.jpeg",
 			"https://i.imgur.com/WH0mKNe.jpeg",
 			"https://i.imgur.com/xUjVJKF.jpeg",
 			"https://i.imgur.com/z68iTwY.jpeg",
@@ -459,6 +461,7 @@ const chapters_sololeveling = [
 			"https://i.imgur.com/weVO4om.jpeg",
 			"https://i.imgur.com/nCUaIIM.jpeg",
 			"https://i.imgur.com/2HPVKRf.jpeg",
+			"https://i.imgur.com/GfStqkk.jpeg",
 			"https://i.imgur.com/b3pJCzn.jpeg"
         ]
     },
@@ -466,8 +469,79 @@ const chapters_sololeveling = [
         chNum: 7,
         title: "Ch. 06",
         images: [
-            "https://i.imgur.com/NkCraRO.jpeg",
-			"https://i.imgur.com/8Uaso3H.jpeg"
+            "https://i.imgur.com/8bA71yA.jpeg",
+			"https://i.imgur.com/S2363xy.jpeg",
+			"https://i.imgur.com/FKCjnGI.jpeg",
+			"https://i.imgur.com/peGpHj9.jpeg",
+			"https://i.imgur.com/4dEtogz.jpeg",
+			"https://i.imgur.com/Nm6Dg9D.jpeg",
+			"https://i.imgur.com/eBjqThU.jpeg",
+			"https://i.imgur.com/0FvRAZg.jpeg",
+			"https://i.imgur.com/mZcrCN1.jpeg",
+			"https://i.imgur.com/dPlhIb4.jpeg",
+			"https://i.imgur.com/cbTzrUX.jpeg",
+			"https://i.imgur.com/jWprxhw.jpeg",
+			"https://i.imgur.com/cVPrMZZ.jpeg",
+			"https://i.imgur.com/gRiSnTW.jpeg",
+			"https://i.imgur.com/HkXJwyF.jpeg",
+			"https://i.imgur.com/KssKn2M.jpeg",
+			"https://i.imgur.com/B3ziNqK.jpeg",
+			"https://i.imgur.com/cQm2Uqo.jpeg",
+			"https://i.imgur.com/fmTXIh8.jpeg",
+			"https://i.imgur.com/7CjR3lM.jpeg",
+			"https://i.imgur.com/Ea53UZH.jpeg",
+			"https://i.imgur.com/1LgU2Ov.jpeg",
+			"https://i.imgur.com/MJcIOur.jpeg",
+			"https://i.imgur.com/6gdp8QK.jpeg",
+			"https://i.imgur.com/fGnEmgb.jpeg",
+			"https://i.imgur.com/odX84mN.jpeg",
+			"https://i.imgur.com/GSgD64A.jpeg",
+			"https://i.imgur.com/kyXUTiw.jpeg",
+			"https://i.imgur.com/0yNvYSH.jpeg",
+			"https://i.imgur.com/RqI8hVt.jpeg",
+			"https://i.imgur.com/0jhlMmY.jpeg",
+			"https://i.imgur.com/u9MCUaZ.jpeg",
+			"https://i.imgur.com/TMumfnk.jpeg",
+			"https://i.imgur.com/HDVFPrY.jpeg",
+			"https://i.imgur.com/FAjiDUf.jpeg",
+			"https://i.imgur.com/G0v2FDb.jpeg",
+			"https://i.imgur.com/71c6TCs.jpeg",
+			"https://i.imgur.com/3ZDwyWO.jpeg",
+			"https://i.imgur.com/bH8qoj1.jpeg",
+			"https://i.imgur.com/GZx4Onm.jpeg",
+			"https://i.imgur.com/WXCxWP1.jpeg"
+        ]
+    },
+    {
+        chNum: 8,
+        title: "Ch. 07",
+        images: [
+            "https://i.imgur.com/8bA71yA.jpeg",
+			"https://i.imgur.com/S2363xy.jpeg"
+        ]
+    },
+    {
+        chNum: 9,
+        title: "Ch. 08",
+        images: [
+            "https://i.imgur.com/8bA71yA.jpeg",
+			"https://i.imgur.com/S2363xy.jpeg"
+        ]
+    },
+    {
+        chNum: 10,
+        title: "Ch. 09",
+        images: [
+            "https://i.imgur.com/8bA71yA.jpeg",
+			"https://i.imgur.com/S2363xy.jpeg"
+        ]
+    },
+    {
+        chNum: 11,
+        title: "Ch. 10",
+        images: [
+            "https://i.imgur.com/8bA71yA.jpeg",
+			"https://i.imgur.com/S2363xy.jpeg"
         ]
     }
 ];
