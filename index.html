@@ -104,20 +104,23 @@
     </div>
 
     <!-- PANGGIL FILE DATABASE TERPISAH DI SINI -->
-    <script src="data.js"></script>
+    <script src="list-komik.js"></script>
+    <script src="opm-data.js"></script>
+    <script src="sololeveling-data.js"></script>
 
     <!-- LOGIK ENGINE WEBSITE -->
     <script>
         let currentComicId = null;
+        let currentChaptersData = []; // Menampung data chapter komik yang sedang aktif dibuka
 
         function displayComics(data) {
             const list = document.getElementById('comicList');
             list.innerHTML = data.map(c => `
-                <div class="comic-card" onclick="openDetail(${c.id})">
+                <div class="comic-card" onclick="openDetail('${c.id}')">
                     <img src="${c.poster}" class="comic-poster">
                     <div class="comic-info">
                         <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
-                        <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${c.chapters.length} Bab</div>
+                        <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${c.totalChapters} Bab</div>
                     </div>
                 </div>
             `).join('');
@@ -130,9 +133,18 @@
             document.getElementById('detailTitle').innerText = comic.title;
             document.getElementById('detailDesc').innerText = comic.desc;
             
+            // JALUR LOGIKA PENGHUBUNG KATA KUNCI ID DAN VARIABLE DATABASE CHAPTER
+            if (id === "one-punch-man") {
+                currentChaptersData = chapters_opm;
+            } else if (id === "solo-leveling") {
+                currentChaptersData = chapters_sololeveling;
+            } else {
+                currentChaptersData = []; // Untuk antisipasi komik baru jika belum didaftarkan variablenya
+            }
+            
             const epListArea = document.getElementById('episodeListArea');
             // Mengurutkan chapter dari nomor terkecil ke terbesar
-            const sortedChapters = [...comic.chapters].sort((a, b) => a.chNum - b.chNum);
+            const sortedChapters = [...currentChaptersData].sort((a, b) => a.chNum - b.chNum);
             
             epListArea.innerHTML = sortedChapters.map(ch => `
                 <div class="episode-item" onclick="loadChapter(${ch.chNum})">
@@ -145,7 +157,7 @@
 
         function loadChapter(chNum) {
             const comic = comics.find(c => c.id === currentComicId);
-            const chapter = comic.chapters.find(ch => ch.chNum === chNum);
+            const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = `<p style="padding:20px; color:#fff;">Memuat halaman...</p>`;
@@ -155,7 +167,7 @@
             `).join('');
 
             const nextBtn = document.getElementById('nextChapterBtn');
-            const hasNext = comic.chapters.some(ch => ch.chNum === chNum + 1);
+            const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
             if (hasNext) {
                 nextBtn.innerText = `Lanjut Chapter ${chNum + 1} →`;
@@ -191,7 +203,7 @@
             displayComics(comics.filter(c => c.title.toLowerCase().includes(q)));
         }
 
-        // Jalankan setelah file data.js selesai dimuat oleh browser
+        // Jalankan setelah semua file js eksternal selesai dimuat oleh browser
         window.onload = function() {
             displayComics(comics);
         };

@@ -1,0 +1,68 @@
+// sololeveling-data.js - Database khusus Chapter Solo Leveling
+const chapters_sololeveling = [
+    {
+        chNum: 1,
+        title: "Ch. 01",
+        images: [
+            "https://i.imgur.com/CQ29OrG.jpeg",
+            "https://i.imgur.com/mJxO7ul.jpeg",
+            "https://i.imgur.com/10ZcxJK.jpeg",
+            "https://i.imgur.com/B4bCFfr.jpeg",
+            "https://i.imgur.com/wil7NjC.jpeg",
+            "https://i.imgur.com/xZZTd1c.jpeg",
+            "https://i.imgur.com/ICx3X8M.jpeg",
+            "https://i.imgur.com/EYdLrbO.jpeg",
+            "https://i.imgur.com/rDufYuG.jpeg",
+            "https://i.imgur.com/rzXmRW6.jpeg",
+            "https://i.imgur.com/MrMxQds.jpeg",
+            "https://i.imgur.com/RIpPAWG.jpeg",
+            "https://i.imgur.com/AizpaXb.jpeg",
+            "https://i.imgur.com/zlx2Xzf.jpeg",
+            "https://i.imgur.com/WEULmdD.jpeg",
+            "https://i.imgur.com/f6jwUqW.jpeg",
+            "https://i.imgur.com/gbel1q2.jpeg",
+            "https://i.imgur.com/bb86Dcw.jpeg",
+            "https://i.imgur.com/p8TBTIG.jpeg",
+            "https://i.imgur.com/n29TzRy.jpeg",
+            "https://i.imgur.com/Ow7oorw.jpeg",
+            "https://i.imgur.com/R8JZAZ4.jpeg",
+            "https://i.imgur.com/7x1FzeK.jpeg",
+            "https://i.imgur.com/G9ueEMX.jpeg",
+            "https://i.imgur.com/JUYjaBY.jpeg",
+            "https://i.imgur.com/ruqM1Jz.jpeg",
+            "https://i.imgur.com/AJnctrM.jpeg",
+            "https://i.imgur.com/YUzUMtQ.jpeg",
+            "https://i.imgur.com/N8O8G8i.jpeg",
+            "https://i.imgur.com/TsIRTpY.jpeg",
+            "https://i.imgur.com/XQMJJXF.jpeg",
+            "https://i.imgur.com/wLVynte.jpeg",
+            "https://i.imgur.com/7ZMK9cs.jpeg",
+            "https://i.imgur.com/VhtSmLU.jpeg",
+            "https://i.imgur.com/23BVY1x.jpeg",
+            "https://i.imgur.com/vIoTJba.jpeg",
+            "https://i.imgur.com/jkONpyt.jpeg",
+            "https://i.imgur.com/yFIchli.jpeg",
+            "https://i.imgur.com/bBEYxmF.jpeg",
+            "https://i.imgur.com/up5gHFS.jpeg",
+            "https://i.imgur.com/PrgKl8m.jpeg",
+            "https://i.imgur.com/HQUOZav.jpeg",
+            "https://i.imgur.com/r7CsaOK.jpeg",
+            "https://i.imgur.com/YMVAN3N.jpeg",
+            "https://i.imgur.com/TqzbNfR.jpeg",
+            "https://i.imgur.com/i3E42QA.jpeg",
+            "https://i.imgur.com/ejZqNyP.jpeg",
+            "https://i.imgur.com/cWW1P28.jpeg",
+            "https://i.imgur.com/kbOo8g4.jpeg",
+            "https://i.imgur.com/EKDvDar.jpeg",
+            "https://i.imgur.com/iUbruJV.jpeg"
+        ]
+    },
+    {
+        chNum: 2,
+        title: "Ch. 02",
+        images: [
+            "https://images.unsplash.com/photo-1614850523060-8da1d56ae167?w=700",
+            "https://images.unsplash.com/photo-1618005198143-e5283b519a7f?w=700"
+        ]
+    }
+];
