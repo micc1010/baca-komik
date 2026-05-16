@@ -62,8 +62,13 @@
         .comic-image-wrapper { width: 100%; background: #000; }
         .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; }
 
-        .btn-next-chapter { display: block; width: 100%; padding: 18px; background: var(--primary); color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 16px; margin: 30px 0; cursor: pointer; text-align: center; }
-        .btn-next-chapter:hover { background: #e64a19; }
+        /* MODIFIKASI NAVIGASI BARU */
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 20px; max-width: 700px; margin: 0 auto; }
+        .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; color: #fff; text-align: center; transition: 0.2s; }
+        .btn-prev { background: #33384f; }
+        .btn-prev:hover { background: #444a69; }
+        .btn-next { background: var(--primary); }
+        .btn-next:hover { background: #e64a19; }
     </style>
 </head>
 <body>
@@ -91,16 +96,22 @@
         </div>
     </div>
 
+    <!-- HALAMAN PEMBACA (READER PAGE) -->
     <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;">
-        <div style="padding: 20px; max-width: 700px; margin: 0 auto;">
-            <button class="btn-back" onclick="changePage('readerPage', 'detailPage')">← Daftar Chapter</button>
+        <div style="padding: 20px 20px 0 20px; max-width: 700px; margin: 0 auto;">
+            <button class="btn-back" onclick="changePage('readerPage', 'detailPage')" style="margin-bottom: 5px;">← Daftar Chapter</button>
         </div>
+
+        <!-- NAVIGASI ATAS -->
+        <div class="nav-wrapper" id="topNavArea"></div>
+
+        <!-- TEMPAT GAMBAR MANGA -->
         <div class="reader-container">
             <div class="comic-image-wrapper" id="comicViewerArea"></div>
-            <div style="padding: 0 20px;">
-                <button id="nextChapterBtn" class="btn-next-chapter">Lanjut ke Chapter Selanjutnya →</button>
-            </div>
         </div>
+
+        <!-- NAVIGASI BAWAH -->
+        <div class="nav-wrapper" id="bottomNavArea" style="margin-top: 20px; padding-bottom: 40px;"></div>
     </div>
 
     <!-- PANGGIL FILE DATABASE TERPISAH DI SINI -->
@@ -111,7 +122,7 @@
     <!-- LOGIK ENGINE WEBSITE -->
     <script>
         let currentComicId = null;
-        let currentChaptersData = []; // Menampung data chapter komik yang sedang aktif dibuka
+        let currentChaptersData = []; 
 
         function displayComics(data) {
             const list = document.getElementById('comicList');
@@ -133,17 +144,15 @@
             document.getElementById('detailTitle').innerText = comic.title;
             document.getElementById('detailDesc').innerText = comic.desc;
             
-            // JALUR LOGIKA PENGHUBUNG KATA KUNCI ID DAN VARIABLE DATABASE CHAPTER
             if (id === "one-punch-man") {
                 currentChaptersData = chapters_opm;
             } else if (id === "solo-leveling") {
                 currentChaptersData = chapters_sololeveling;
             } else {
-                currentChaptersData = []; // Untuk antisipasi komik baru jika belum didaftarkan variablenya
+                currentChaptersData = [];
             }
             
             const epListArea = document.getElementById('episodeListArea');
-            // Mengurutkan chapter dari nomor terkecil ke terbesar
             const sortedChapters = [...currentChaptersData].sort((a, b) => a.chNum - b.chNum);
             
             epListArea.innerHTML = sortedChapters.map(ch => `
@@ -159,31 +168,43 @@
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
+            // 1. Tampilkan Gambar Manga
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = `<p style="padding:20px; color:#fff;">Memuat halaman...</p>`;
-            
             viewer.innerHTML = chapter.images.map(imgUrl => `
                 <img src="${imgUrl}" class="comic-page-img" loading="lazy" alt="Halaman Komik">
             `).join('');
 
-            const nextBtn = document.getElementById('nextChapterBtn');
+            // 2. Cek Ketersediaan Chapter Navigasi
+            const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            if (hasNext) {
-                nextBtn.innerText = `Lanjut Chapter ${chNum + 1} →`;
-                nextBtn.onclick = function() {
-                    window.open(comic.direct, '_blank'); 
-                    setTimeout(() => {
-                        loadChapter(chNum + 1);
-                        document.getElementById('readerPage').scrollTo(0,0);
-                    }, 200);
-                };
-                nextBtn.style.display = 'block';
-            } else {
-                nextBtn.style.display = 'none';
-            }
+            // 3. Buat Struktur HTML Tombol Navigasi
+            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="triggerChapter(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
+            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="triggerAdAndNext(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
+
+            // 4. Pasang Navigasi ke Atas dan Bawah Sekaligus
+            document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
+            document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
 
             changePage('detailPage', 'readerPage');
+        }
+
+        // Fungsi pembantu untuk tombol "Prev" agar langsung memuat chapter sebelumnya tanpa iklan
+        function triggerChapter(targetCh) {
+            loadChapter(targetCh);
+            document.getElementById('readerPage').scrollTo(0,0);
+        }
+
+        // Fungsi pembantu untuk tombol "Next" agar memicu Pop-Under Adsterra terlebih dahulu baru pindah chapter
+        function triggerAdAndNext(targetCh) {
+            const comic = comics.find(c => c.id === currentComicId);
+            window.open(comic.direct, '_blank'); // Membuka Direct Link Adsterra di tab baru
+            
+            setTimeout(() => {
+                loadChapter(targetCh);
+                document.getElementById('readerPage').scrollTo(0,0); // Reset scroll ke paling atas
+            }, 200);
         }
 
         function changePage(fromId, toId) {
@@ -203,7 +224,6 @@
             displayComics(comics.filter(c => c.title.toLowerCase().includes(q)));
         }
 
-        // Jalankan setelah semua file js eksternal selesai dimuat oleh browser
         window.onload = function() {
             displayComics(comics);
         };
