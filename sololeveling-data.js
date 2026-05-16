@@ -325,5 +325,21 @@ const chapters_sololeveling = [
             "https://i.imgur.com/NkCraRO.jpeg",
 			"https://i.imgur.com/8Uaso3H.jpeg"
         ]
+    },
+    {
+        chNum: 6,
+        title: "Ch. 06",
+        images: [
+            "https://i.imgur.com/NkCraRO.jpeg",
+			"https://i.imgur.com/8Uaso3H.jpeg"
+        ]
+    },
+    {
+        chNum: 7,
+        title: "Ch. 07",
+        images: [
+            "https://i.imgur.com/NkCraRO.jpeg",
+			"https://i.imgur.com/8Uaso3H.jpeg"
+        ]
     }
 ];
