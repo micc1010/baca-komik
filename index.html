@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KomikIndo Web - Pembaca Terpisah</title>
+    <title>KomikIndo Web - Pembaca Vertikal Ringan</title>
     <style>
         :root {
             --primary: #ff5722; 
@@ -60,7 +60,9 @@
 
         .reader-container { max-width: 700px; margin: 0 auto; text-align: center; }
         .comic-image-wrapper { width: 100%; background: #000; }
-        .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; }
+        
+        /* Gambar webtoon memanjang ke bawah */
+        .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; background: #000; }
 
         .nav-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 20px; max-width: 700px; margin: 0 auto; }
         .btn-nav { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; color: #fff; text-align: center; transition: 0.2s; }
@@ -98,7 +100,7 @@
     <!-- HALAMAN PEMBACA (READER PAGE) -->
     <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;">
         <div style="padding: 20px 20px 0 20px; max-width: 700px; margin: 0 auto;">
-            <button class="btn-back" onclick="changePage('readerPage', 'detailPage')" style="margin-bottom: 5px;">← Daftar Chapter</button>
+            <button class="btn-back" onclick="exitReader()" style="margin-bottom: 5px;">← Daftar Chapter</button>
         </div>
 
         <!-- NAVIGASI ATAS -->
@@ -113,7 +115,7 @@
         <div class="nav-wrapper" id="bottomNavArea" style="margin-top: 20px; padding-bottom: 40px;"></div>
     </div>
 
-    <!-- PANGGIL FILE DATABASE TERPISAH DI SINI -->
+    <!-- PANGGIL DATABASE -->
     <script src="list-komik.js"></script>
     <script src="opm-data.js"></script>
     <script src="sololeveling-data.js"></script>
@@ -143,13 +145,9 @@
             document.getElementById('detailTitle').innerText = comic.title;
             document.getElementById('detailDesc').innerText = comic.desc;
             
-            if (id === "one-punch-man") {
-                currentChaptersData = chapters_opm;
-            } else if (id === "solo-leveling") {
-                currentChaptersData = chapters_sololeveling;
-            } else {
-                currentChaptersData = [];
-            }
+            if (id === "one-punch-man") { currentChaptersData = chapters_opm; } 
+            else if (id === "solo-leveling") { currentChaptersData = chapters_sololeveling; } 
+            else { currentChaptersData = []; }
             
             const epListArea = document.getElementById('episodeListArea');
             const sortedChapters = [...currentChaptersData].sort((a, b) => a.chNum - b.chNum);
@@ -167,37 +165,47 @@
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
-            // Tampilkan Gambar Manga
             const viewer = document.getElementById('comicViewerArea');
-            viewer.innerHTML = `<p style="padding:20px; color:#fff;">Memuat halaman...</p>`;
-            viewer.innerHTML = chapter.images.map(imgUrl => `
-                <img src="${imgUrl}" class="comic-page-img" loading="lazy" alt="Halaman Komik">
-            `).join('');
+            
+            // PERBAIKAN UTAMA: Hancurkan isi DOM lama dan kosongkan cache render browser untuk bab sebelumnya
+            viewer.innerHTML = ""; 
+            
+            // Berikan jeda 50ms untuk memastikan memori browser bersih total sebelum memuat episode baru
+            setTimeout(() => {
+                viewer.innerHTML = chapter.images.map(imgUrl => `
+                    <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
+                `).join('');
+            }, 50);
 
-            // Cek Ketersediaan Chapter Navigasi
+            // Cek Ketersediaan Bab
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            // Buat Struktur HTML Tombol Navigasi (Kedua tombol sekarang memanggil fungsi Iklan)
             let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="triggerAdAndGo(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
             let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="triggerAdAndGo(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
-            // Pasang Navigasi ke Atas dan Bawah Sekaligus
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
 
             changePage('detailPage', 'readerPage');
         }
 
-        // Fungsi Tunggal untuk memicu Iklan Direct Link Adsterra lalu berpindah chapter (Berlaku untuk Next & Prev)
         function triggerAdAndGo(targetCh) {
             const comic = comics.find(c => c.id === currentComicId);
-            window.open(comic.direct, '_blank'); // Membuka Direct Link Adsterra di tab baru
+            window.open(comic.direct, '_blank'); 
             
             setTimeout(() => {
                 loadChapter(targetCh);
-                document.getElementById('readerPage').scrollTo(0,0); // Reset scroll ke paling atas halaman
+                // Paksa halaman scroll ke posisi paling atas (0,0) di bab baru
+                document.getElementById('readerPage').scrollTo(0,0); 
             }, 200);
+        }
+
+        // Fungsi saat user klik tombol "Kembali ke Daftar Chapter"
+        function exitReader() {
+            // Bersihkan konten gambar agar RAM HP pengguna langsung lega kembali
+            document.getElementById('comicViewerArea').innerHTML = "";
+            changePage('readerPage', 'detailPage');
         }
 
         function changePage(fromId, toId) {
@@ -207,6 +215,7 @@
         }
 
         function goHome() {
+            document.getElementById('comicViewerArea').innerHTML = ""; // Bersihkan memori jika ke home
             document.getElementById('detailPage').style.display = 'none';
             document.getElementById('readerPage').style.display = 'none';
             document.getElementById('mainMenu').style.display = 'block';
