@@ -39,7 +39,7 @@
         .ad-space {
             width: 100%; min-height: 90px; background: #222; margin-bottom: 30px;
             display: flex; align-items: center; justify-content: center;
-            color: #555; border-radius: 8px; border: 1px dashed #444;
+            color: #555; border-radius: 8px; border: 1px dashed #444; overflow: hidden;
         }
 
         .comic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
@@ -61,7 +61,6 @@
         .reader-container { max-width: 700px; margin: 0 auto; text-align: center; }
         .comic-image-wrapper { width: 100%; background: #000; }
         
-        /* Gambar webtoon memanjang ke bawah */
         .comic-page-img { width: 100%; height: auto; display: block; margin: 0 auto; background: #000; }
 
         .nav-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 20px; max-width: 700px; margin: 0 auto; }
@@ -82,7 +81,20 @@
     </header>
 
     <div class="container" id="mainMenu">
-        <div class="ad-space">Tempat Iklan Banner Adsterra</div>
+        <!-- AREA BANNER 320x50 ADSTERRA -->
+        <div class="ad-space">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '223bb73deddb6f2aeb053d91b5a64e28',
+                    'format' : 'iframe',
+                    'height' : 50,
+                    'width' : 320,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/223bb73deddb6f2aeb053d91b5a64e28/invoke.js"></script>
+        </div>
+        
         <h2 style="margin-bottom: 20px;">Update Manga Terbaru</h2>
         <div class="comic-grid" id="comicList"></div>
     </div>
@@ -120,7 +132,7 @@
     <script src="opm-data.js"></script>
     <script src="sololeveling-data.js"></script>
 
-    <!-- LOGIK ENGINE WEBSITE -->
+    <!-- ENGINE JAVASCRIPT WEBSITE -->
     <script>
         let currentComicId = null;
         let currentChaptersData = []; 
@@ -167,17 +179,16 @@
             
             const viewer = document.getElementById('comicViewerArea');
             
-            // PERBAIKAN UTAMA: Hancurkan isi DOM lama dan kosongkan cache render browser untuk bab sebelumnya
+            // Hancurkan render bab lama agar memori kembali bersih
             viewer.innerHTML = ""; 
             
-            // Berikan jeda 50ms untuk memastikan memori browser bersih total sebelum memuat episode baru
+            // Render gambar bab baru secara fokus
             setTimeout(() => {
                 viewer.innerHTML = chapter.images.map(imgUrl => `
                     <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
                 `).join('');
             }, 50);
 
-            // Cek Ketersediaan Bab
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
@@ -190,21 +201,20 @@
             changePage('detailPage', 'readerPage');
         }
 
+        // FUNGSI PEMICU IKLAN POPUNDER SAAT KLIK TOMBOL NAVIGASI
         function triggerAdAndGo(targetCh) {
-            const comic = comics.find(c => c.id === currentComicId);
-            window.open(comic.direct, '_blank'); 
+            // Membuat element link bayangan untuk mengeksekusi script Popunder Adsterra Anda
+            const adLink = document.createElement('a');
+            adLink.href = 'https://pl29491049.effectivecpmnetwork.com/a6/e1/0d/a6e10d75ce434b68d1087ad23082d70c.js'; // Mengarah ke skrip popunder
+            adLink.target = '_blank';
             
-            setTimeout(() => {
-                loadChapter(targetCh);
-                // Paksa halaman scroll ke posisi paling atas (0,0) di bab baru
-                document.getElementById('readerPage').scrollTo(0,0); 
-            }, 200);
+            // Jalankan fungsi load chapter baru di tab utama
+            loadChapter(targetCh);
+            document.getElementById('readerPage').scrollTo(0,0); 
         }
 
-        // Fungsi saat user klik tombol "Kembali ke Daftar Chapter"
         function exitReader() {
-            // Bersihkan konten gambar agar RAM HP pengguna langsung lega kembali
-            document.getElementById('comicViewerArea').innerHTML = "";
+            document.getElementById('comicViewerArea').innerHTML = ""; // Kosongkan layar saat keluar
             changePage('readerPage', 'detailPage');
         }
 
@@ -215,7 +225,7 @@
         }
 
         function goHome() {
-            document.getElementById('comicViewerArea').innerHTML = ""; // Bersihkan memori jika ke home
+            document.getElementById('comicViewerArea').innerHTML = "";
             document.getElementById('detailPage').style.display = 'none';
             document.getElementById('readerPage').style.display = 'none';
             document.getElementById('mainMenu').style.display = 'block';
@@ -230,5 +240,12 @@
             displayComics(comics);
         };
     </script>
+
+    <!-- SCRIPT POPUNDER ADSTERRA (DIMUAT DI NAVIGASI UTAMA) -->
+    <script src="https://pl29491049.effectivecpmnetwork.com/a6/e1/0d/a6e10d75ce434b68d1087ad23082d70c.js"></script>
+
+    <!-- SCRIPT SOCIAL BAR ADSTERRA (MELAYANG OTOMATIS) -->
+    <script src="https://pl29491050.effectivecpmnetwork.com/54/1e/72/541e727447ceacba8ba2f42a3e336dc0.js"></script>
+
 </body>
 </html>
