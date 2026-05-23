@@ -74,25 +74,24 @@
 <body>
 
     <header>
-        <h1 onclick="goHome()">KomikIndo Web</h1>
+        <h1 onclick="aksiDenganIklan(() => goHome())">KomikIndo Web</h1>
         <div class="search-container">
             <input type="text" id="searchInput" onkeyup="searchComic()" placeholder="Cari komik...">
         </div>
     </header>
 
     <div class="container" id="mainMenu">
-        <!-- AREA BANNER 320x50 ADSTERRA -->
         <div class="ad-space">
             <script type="text/javascript">
                 atOptions = {
-                    'key' : '5d0df2810aa83412ed541c27d0a2398e',
+                    'key' : '223bb73deddb6f2aeb053d91b5a64e28',
                     'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
+                    'height' : 50,
+                    'width' : 320,
                     'params' : {}
                 };
             </script>
-            <script type="text/javascript" src="https://www.highperformanceformat.com/5d0df2810aa83412ed541c27d0a2398e/invoke.js"></script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/223bb73deddb6f2aeb053d91b5a64e28/invoke.js"></script>
         </div>
         
         <h2 style="margin-bottom: 20px;">Update Manga Terbaru</h2>
@@ -101,7 +100,7 @@
 
     <div id="detailPage" class="page-overlay">
         <div class="page-content">
-            <button class="btn-back" onclick="changePage('detailPage', 'mainMenu')">← Kembali ke Utama</button>
+            <button class="btn-back" onclick="aksiDenganIklan(() => changePage('detailPage', 'mainMenu'))">← Kembali ke Utama</button>
             <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Judul Komik</h2>
             <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;"></p>
             <h3>Pilih Chapter:</h3>
@@ -109,38 +108,41 @@
         </div>
     </div>
 
-    <!-- HALAMAN PEMBACA (READER PAGE) -->
     <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;">
         <div style="padding: 20px 20px 0 20px; max-width: 700px; margin: 0 auto;">
-            <button class="btn-back" onclick="exitReader()" style="margin-bottom: 5px;">← Daftar Chapter</button>
+            <button class="btn-back" onclick="aksiDenganIklan(() => exitReader())">← Daftar Chapter</button>
         </div>
 
-        <!-- NAVIGASI ATAS -->
         <div class="nav-wrapper" id="topNavArea"></div>
 
-        <!-- TEMPAT GAMBAR MANGA -->
         <div class="reader-container">
             <div class="comic-image-wrapper" id="comicViewerArea"></div>
         </div>
 
-        <!-- NAVIGASI BAWAH -->
         <div class="nav-wrapper" id="bottomNavArea" style="margin-top: 20px; padding-bottom: 40px;"></div>
     </div>
 
-    <!-- PANGGIL DATABASE -->
     <script src="list-komik.js"></script>
     <script src="opm-data.js"></script>
     <script src="sololeveling-data.js"></script>
 
-    <!-- ENGINE JAVASCRIPT WEBSITE -->
     <script>
+        // URL DIRECT LINK ADSTERRA ANDA SUDAH TERPASANG DI SINI
+        const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
+
+        // Fungsi khusus membuka iklan Adsterra di tab baru sebelum mengeksekusi navigasi utama
+        function aksiDenganIklan(callbackAksi) {
+            window.open(URL_DIRECT_LINK, '_blank');
+            if (callbackAksi) callbackAksi();
+        }
+
         let currentComicId = null;
         let currentChaptersData = []; 
 
         function displayComics(data) {
             const list = document.getElementById('comicList');
             list.innerHTML = data.map(c => `
-                <div class="comic-card" onclick="openDetail('${c.id}')">
+                <div class="comic-card" onclick="aksiDenganIklan(() => openDetail('${c.id}'))">
                     <img src="${c.poster}" class="comic-poster">
                     <div class="comic-info">
                         <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
@@ -165,7 +167,7 @@
             const sortedChapters = [...currentChaptersData].sort((a, b) => a.chNum - b.chNum);
             
             epListArea.innerHTML = sortedChapters.map(ch => `
-                <div class="episode-item" onclick="loadChapter(${ch.chNum})">
+                <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
                     ${ch.title}
                 </div>
             `).join('');
@@ -178,11 +180,9 @@
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
             const viewer = document.getElementById('comicViewerArea');
-            
-            // Hancurkan render bab lama agar memori kembali bersih
             viewer.innerHTML = ""; 
             
-            // Render gambar bab baru secara fokus
+            // Render gambar bab baru dan hapus bab lama dari memori agar web super ringan
             setTimeout(() => {
                 viewer.innerHTML = chapter.images.map(imgUrl => `
                     <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
@@ -192,8 +192,8 @@
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="triggerAdAndGo(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
-            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="triggerAdAndGo(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
+            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="aksiDenganIklan(() => loadChapter(${chNum - 1}))">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
+            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="aksiDenganIklan(() => loadChapter(${chNum + 1}))">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
@@ -201,20 +201,8 @@
             changePage('detailPage', 'readerPage');
         }
 
-        // FUNGSI PEMICU IKLAN POPUNDER SAAT KLIK TOMBOL NAVIGASI
-        function triggerAdAndGo(targetCh) {
-            // Membuat element link bayangan untuk mengeksekusi script Popunder Adsterra Anda
-            const adLink = document.createElement('a');
-            adLink.href = 'https://pl29491049.effectivecpmnetwork.com/a6/e1/0d/a6e10d75ce434b68d1087ad23082d70c.js'; // Mengarah ke skrip popunder
-            adLink.target = '_blank';
-            
-            // Jalankan fungsi load chapter baru di tab utama
-            loadChapter(targetCh);
-            document.getElementById('readerPage').scrollTo(0,0); 
-        }
-
         function exitReader() {
-            document.getElementById('comicViewerArea').innerHTML = ""; // Kosongkan layar saat keluar
+            document.getElementById('comicViewerArea').innerHTML = ""; 
             changePage('readerPage', 'detailPage');
         }
 
@@ -241,10 +229,6 @@
         };
     </script>
 
-    <!-- SCRIPT POPUNDER ADSTERRA (DIMUAT DI NAVIGASI UTAMA) -->
-    <script src="https://pl29491049.effectivecpmnetwork.com/a6/e1/0d/a6e10d75ce434b68d1087ad23082d70c.js"></script>
-
-    <!-- SCRIPT SOCIAL BAR ADSTERRA (MELAYANG OTOMATIS) -->
     <script src="https://pl29491050.effectivecpmnetwork.com/54/1e/72/541e727447ceacba8ba2f42a3e336dc0.js"></script>
 
 </body>
