@@ -11,5 +11,11 @@ const comics = [
         title: "Solo Leveling",
         poster: "https://i.imgur.com/xKVmzM3.png",
         desc: "Di dunia di mana para pemburu bertarung melawan makhluk dari dunia lain melalui portal misterius, Sung Jinwoo adalah pemburu dengan kekuatan yang sangat lemah. Perjalanannya untuk menjadi pemburu terkuat membawa banyak tantangan serta intrik, termasuk menghadapi organisasi rahasia.",
+    },
+    {
+        id: "eleceed",
+        title: "Eleceed",
+        poster: "https://i.imgur.com/Cy7UKQi.jpeg",
+        desc: "Kaiden – Pengguna kemampuan misterius yang bersembunyi di dalam tubuh kucing jalanan. Dia kemudian dijemput oleh Jiwoo setelah terluka setelah berkelahi dengan pengguna kemampuan lain. Ia memiliki kepribadian yang keras kepala dan suka memerintah. Jiwoo – anak SMA yang energik dan banyak bicara yang suka kucing. Ia sangat baik dan juga tampaknya memiliki kemampuan khusus.",
     }
 ];
