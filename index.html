@@ -1,3 +1,19 @@
+<script src="list-komik.js"></script>
+    <script src="opm-data.js"></script>
+    <script src="sololeveling-data.js"></script>
+    <script src="eleceed-data.js"></script> ```
+
+---
+
+### Langkah 2: Daftarkan Eleceed di Engine JavaScript (KODE LENGKAP REVISI)
+
+Agar Anda tidak bingung memodifikasinya, berikut adalah **Full Coding `index.html` terbaru** yang sudah saya perbarui agar mengenali data komik **Eleceed**. 
+
+*(Catatan: Di dalam kode ini, saya asumsikan nama variabel array di dalam file `eleceed-data.js` Anda bernama **`chapters_eleceed`**).*
+
+Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lama Anda:
+
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -125,28 +141,29 @@
     <script src="list-komik.js"></script>
     <script src="opm-data.js"></script>
     <script src="sololeveling-data.js"></script>
+    <script src="eleceed-data.js"></script>
 
     <script>
-        // URL DIRECT LINK ADSTERRA ANDA
         const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
 
-        // Fungsi pembuka iklan Direct Link pada tab baru
         function aksiDenganIklan(callbackAksi) {
             window.open(URL_DIRECT_LINK, '_blank');
             if (callbackAksi) callbackAksi();
         }
 
-        // FUNGSI MENAMPILKAN DAFTAR KOMIK (OTOMATIS HITUNG TOTAL CHAPTER)
+        // FUNGSI MENAMPILKAN DAFTAR KOMIK (SUDAH DITAMBAHKAN LOGIKA UNTUK ELECEED)
         function displayComics(data) {
             const list = document.getElementById('comicList');
             
             list.innerHTML = data.map(c => {
-                // Hitung total bab secara dinamis menggunakan .length dari database masing-masing komik
                 let totalBabOtomatis = 0;
+                
                 if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') {
                     totalBabOtomatis = chapters_opm.length;
                 } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
                     totalBabOtomatis = chapters_sololeveling.length;
+                } else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') {
+                    totalBabOtomatis = chapters_eleceed.length; // Menghitung total bab Eleceed
                 }
 
                 return `
@@ -161,7 +178,7 @@
             }).join('');
         }
 
-        // FUNGSI DETAIL KOMIK (OTOMATIS SORTIR CHAPTER TERBARU DI ATAS)
+        // FUNGSI DETAIL KOMIK (SUDAH DITAMBAHKAN DATA ELECEED)
         function openDetail(id) {
             const comic = comics.find(c => c.id === id);
             currentComicId = id;
@@ -171,11 +188,10 @@
             
             if (id === "one-punch-man") { currentChaptersData = chapters_opm; } 
             else if (id === "solo-leveling") { currentChaptersData = chapters_sololeveling; } 
+            else if (id === "eleceed") { currentChaptersData = chapters_eleceed; } // Mengambil array data Eleceed
             else { currentChaptersData = []; }
             
             const epListArea = document.getElementById('episodeListArea');
-            
-            // Mengurutkan nomor bab secara terbalik (besar ke kecil) agar rilis terbaru ada di atas
             const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
             
             epListArea.innerHTML = sortedChapters.map(ch => `
@@ -187,15 +203,13 @@
             changePage('mainMenu', 'detailPage');
         }
 
-        // FUNGSI MEMUAT GAMBAR CHAPTER (MEMBERSIHKAN MEMORI AGAR SUPER RINGAN)
         function loadChapter(chNum) {
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
             const viewer = document.getElementById('comicViewerArea');
-            viewer.innerHTML = ""; // Hancurkan konten gambar bab sebelumnya dari DOM
+            viewer.innerHTML = ""; 
             
-            // Proses pemuatan gambar baru dengan delay singkat demi stabilitas browser HP
             setTimeout(() => {
                 viewer.innerHTML = chapter.images.map(imgUrl => `
                     <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
@@ -205,7 +219,6 @@
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            // Pasang fungsi iklan pada tombol navigasi bab pembaca
             let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="aksiDenganIklan(() => loadChapter(${chNum - 1}))">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
             let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="aksiDenganIklan(() => loadChapter(${chNum + 1}))">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
@@ -216,7 +229,7 @@
         }
 
         function exitReader() {
-            document.getElementById('comicViewerArea').innerHTML = ""; // Bersihkan gambar saat keluar
+            document.getElementById('comicViewerArea').innerHTML = ""; 
             changePage('readerPage', 'detailPage');
         }
 
