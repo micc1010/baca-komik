@@ -159,18 +159,23 @@
             }).join('');
         }
 
-        // KETIK USER KLIK KOMIK -> INPUT JEJAK HISTORY BARU
-        function openDetail(id) {
-            const comic = comics.find(c => c.id === id);
+        let currentComicId = null;
+        let currentChaptersData = [];
+
+        function setComicDatabase(id) {
             currentComicId = id;
-            
-            document.getElementById('detailTitle').innerText = comic.title;
-            document.getElementById('detailDesc').innerText = comic.desc;
-            
             if (id === "one-punch-man") { currentChaptersData = chapters_opm; } 
             else if (id === "solo-leveling") { currentChaptersData = chapters_sololeveling; } 
             else if (id === "eleceed") { currentChaptersData = chapters_eleceed; }
             else { currentChaptersData = []; }
+        }
+
+        function openDetail(id) {
+            setComicDatabase(id);
+            const comic = comics.find(c => c.id === id);
+            
+            document.getElementById('detailTitle').innerText = comic.title;
+            document.getElementById('detailDesc').innerText = comic.desc;
             
             const epListArea = document.getElementById('episodeListArea');
             const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
@@ -181,16 +186,21 @@
                 </div>
             `).join('');
 
-            // Trik Inti: Push data halaman ke history browser
             history.pushState({ page: 'detailPage', comicId: id }, "");
             renderPageLayout();
         }
 
-        // KETIK USER KLIK CHAPTER -> INPUT JEJAK HISTORY BARU
         function loadChapter(chNum) {
-            const comic = comics.find(c => c.id === currentComicId);
+            renderChapterImages(chNum);
+            history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
+            renderPageLayout();
+        }
+
+        // FUNGSI KHUSUS UNTUK MERENDER GAMBAR (DIPANGGIL SAAT KLIK, BACK, ATAU FORWARD)
+        function renderChapterImages(chNum) {
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
-            
+            if (!chapter) return;
+
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = ""; 
             
@@ -208,23 +218,16 @@
 
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
-
-            // Trik Inti: Push data bab ke history browser
-            history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
-            renderPageLayout();
         }
 
-        // FUNGSI UTAMA UNTUK MENGATUR TAMPILAN SESUAI JEJAK HISTORY BROWSER
         function renderPageLayout() {
             const state = history.state;
             
-            // Sembunyikan semua halaman terlebih dahulu
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('detailPage').style.display = 'none';
             document.getElementById('readerPage').style.display = 'none';
 
             if (!state) {
-                // Jika state kosong (Berarti ada di menu utama)
                 document.getElementById('mainMenu').style.display = 'block';
                 document.getElementById('comicViewerArea').innerHTML = "";
             } else if (state.page === 'detailPage') {
@@ -236,17 +239,34 @@
             window.scrollTo(0,0);
         }
 
-        // DETEKSI OTOMATIS TOMBOL BACK DI BROWSER / HP
+        // SINKRONISASI TOTAL SAAT TOMBOL MAJU (FORWARD) ATAU MUNDUR (BACK) SITES DIKLIK
         window.onpopstate = function(event) {
-            // Ketika user menekan tombol back fisik, sinkronkan ulang datanya
-            if (history.state && history.state.page === 'detailPage') {
-                currentComicId = history.state.comicId;
+            const state = history.state;
+            if (state) {
+                if (state.comicId) {
+                    setComicDatabase(state.comicId);
+                }
+                if (state.page === 'readerPage' && state.chNum) {
+                    // Paksa sistem merender ulang konten gambar manga saat mendeteksi tombol maju/mundur browser
+                    renderChapterImages(state.chNum);
+                }
+                if (state.page === 'detailPage' && state.comicId) {
+                    const comic = comics.find(c => c.id === state.comicId);
+                    document.getElementById('detailTitle').innerText = comic.title;
+                    document.getElementById('detailDesc').innerText = comic.desc;
+                    const epListArea = document.getElementById('episodeListArea');
+                    const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
+                    epListArea.innerHTML = sortedChapters.map(ch => `
+                        <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
+                            ${ch.title}
+                        </div>
+                    `).join('');
+                }
             }
             renderPageLayout();
         };
 
         function goHome() {
-            // Jika ingin kembali ke rumah lewat logo, reset history ke awal
             history.pushState(null, "");
             renderPageLayout();
         }
@@ -257,7 +277,6 @@
         }
 
         window.onload = function() {
-            // Set state awal saat web pertama kali dimuat
             history.replaceState(null, "");
             displayComics(comics);
         };
