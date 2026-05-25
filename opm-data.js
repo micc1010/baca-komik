@@ -6108,7 +6108,7 @@ const chapters_opm = [
 			"https://i.imgur.com/xstaeQ1.jpeg",
 			"https://i.imgur.com/VOKZCe2.jpeg"
 		]	
-	}
+	},
 	{		
 		chNum: 174,	
 		title: "Ch. 145",	
