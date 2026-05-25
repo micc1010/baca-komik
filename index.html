@@ -1,19 +1,3 @@
-<script src="list-komik.js"></script>
-    <script src="opm-data.js"></script>
-    <script src="sololeveling-data.js"></script>
-    <script src="eleceed-data.js"></script> ```
-
----
-
-### Langkah 2: Daftarkan Eleceed di Engine JavaScript (KODE LENGKAP REVISI)
-
-Agar Anda tidak bingung memodifikasinya, berikut adalah **Full Coding `index.html` terbaru** yang sudah saya perbarui agar mengenali data komik **Eleceed**. 
-
-*(Catatan: Di dalam kode ini, saya asumsikan nama variabel array di dalam file `eleceed-data.js` Anda bernama **`chapters_eleceed`**).*
-
-Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lama Anda:
-
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -151,7 +135,6 @@ Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lam
             if (callbackAksi) callbackAksi();
         }
 
-        // FUNGSI MENAMPILKAN DAFTAR KOMIK (SUDAH DITAMBAHKAN LOGIKA UNTUK ELECEED)
         function displayComics(data) {
             const list = document.getElementById('comicList');
             
@@ -163,7 +146,7 @@ Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lam
                 } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
                     totalBabOtomatis = chapters_sololeveling.length;
                 } else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') {
-                    totalBabOtomatis = chapters_eleceed.length; // Menghitung total bab Eleceed
+                    totalBabOtomatis = chapters_eleceed.length;
                 }
 
                 return `
@@ -178,7 +161,6 @@ Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lam
             }).join('');
         }
 
-        // FUNGSI DETAIL KOMIK (SUDAH DITAMBAHKAN DATA ELECEED)
         function openDetail(id) {
             const comic = comics.find(c => c.id === id);
             currentComicId = id;
@@ -188,7 +170,7 @@ Silakan salin seluruh kode di bawah ini untuk menggantikan file `index.html` lam
             
             if (id === "one-punch-man") { currentChaptersData = chapters_opm; } 
             else if (id === "solo-leveling") { currentChaptersData = chapters_sololeveling; } 
-            else if (id === "eleceed") { currentChaptersData = chapters_eleceed; } // Mengambil array data Eleceed
+            else if (id === "eleceed") { currentChaptersData = chapters_eleceed; }
             else { currentChaptersData = []; }
             
             const epListArea = document.getElementById('episodeListArea');
