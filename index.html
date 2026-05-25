@@ -127,31 +127,41 @@
     <script src="sololeveling-data.js"></script>
 
     <script>
-        // URL DIRECT LINK ADSTERRA ANDA SUDAH TERPASANG DI SINI
+        // URL DIRECT LINK ADSTERRA ANDA
         const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
 
-        // Fungsi khusus membuka iklan Adsterra di tab baru sebelum mengeksekusi navigasi utama
+        // Fungsi pembuka iklan Direct Link pada tab baru
         function aksiDenganIklan(callbackAksi) {
             window.open(URL_DIRECT_LINK, '_blank');
             if (callbackAksi) callbackAksi();
         }
 
-        let currentComicId = null;
-        let currentChaptersData = []; 
-
+        // FUNGSI MENAMPILKAN DAFTAR KOMIK (OTOMATIS HITUNG TOTAL CHAPTER)
         function displayComics(data) {
             const list = document.getElementById('comicList');
-            list.innerHTML = data.map(c => `
-                <div class="comic-card" onclick="aksiDenganIklan(() => openDetail('${c.id}'))">
-                    <img src="${c.poster}" class="comic-poster">
-                    <div class="comic-info">
-                        <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
-                        <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${c.totalChapters} Bab</div>
+            
+            list.innerHTML = data.map(c => {
+                // Hitung total bab secara dinamis menggunakan .length dari database masing-masing komik
+                let totalBabOtomatis = 0;
+                if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') {
+                    totalBabOtomatis = chapters_opm.length;
+                } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
+                    totalBabOtomatis = chapters_sololeveling.length;
+                }
+
+                return `
+                    <div class="comic-card" onclick="aksiDenganIklan(() => openDetail('${c.id}'))">
+                        <img src="${c.poster}" class="comic-poster">
+                        <div class="comic-info">
+                            <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${totalBabOtomatis} Bab</div>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
+        // FUNGSI DETAIL KOMIK (OTOMATIS SORTIR CHAPTER TERBARU DI ATAS)
         function openDetail(id) {
             const comic = comics.find(c => c.id === id);
             currentComicId = id;
@@ -164,7 +174,9 @@
             else { currentChaptersData = []; }
             
             const epListArea = document.getElementById('episodeListArea');
-            const sortedChapters = [...currentChaptersData].sort((a, b) => a.chNum - b.chNum);
+            
+            // Mengurutkan nomor bab secara terbalik (besar ke kecil) agar rilis terbaru ada di atas
+            const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
             
             epListArea.innerHTML = sortedChapters.map(ch => `
                 <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
@@ -175,14 +187,15 @@
             changePage('mainMenu', 'detailPage');
         }
 
+        // FUNGSI MEMUAT GAMBAR CHAPTER (MEMBERSIHKAN MEMORI AGAR SUPER RINGAN)
         function loadChapter(chNum) {
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             
             const viewer = document.getElementById('comicViewerArea');
-            viewer.innerHTML = ""; 
+            viewer.innerHTML = ""; // Hancurkan konten gambar bab sebelumnya dari DOM
             
-            // Render gambar bab baru dan hapus bab lama dari memori agar web super ringan
+            // Proses pemuatan gambar baru dengan delay singkat demi stabilitas browser HP
             setTimeout(() => {
                 viewer.innerHTML = chapter.images.map(imgUrl => `
                     <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
@@ -192,6 +205,7 @@
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
+            // Pasang fungsi iklan pada tombol navigasi bab pembaca
             let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="aksiDenganIklan(() => loadChapter(${chNum - 1}))">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
             let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="aksiDenganIklan(() => loadChapter(${chNum + 1}))">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
@@ -202,7 +216,7 @@
         }
 
         function exitReader() {
-            document.getElementById('comicViewerArea').innerHTML = ""; 
+            document.getElementById('comicViewerArea').innerHTML = ""; // Bersihkan gambar saat keluar
             changePage('readerPage', 'detailPage');
         }
 
