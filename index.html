@@ -138,13 +138,13 @@
         function displayComics(data) {
             const list = document.getElementById('comicList');
             list.innerHTML = data.map(c => {
-                let totalBabOtomatis = 0;
+                let totalChapterOtomatis = 0;
                 if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') {
-                    totalBabOtomatis = chapters_opm.length;
+                    totalChapterOtomatis = chapters_opm.length;
                 } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
-                    totalBabOtomatis = chapters_sololeveling.length;
+                    totalChapterOtomatis = chapters_sololeveling.length;
                 } else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') {
-                    totalBabOtomatis = chapters_eleceed.length;
+                    totalChapterOtomatis = chapters_eleceed.length;
                 }
 
                 return `
@@ -152,7 +152,7 @@
                         <img src="${c.poster}" class="comic-poster">
                         <div class="comic-info">
                             <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${totalBabOtomatis} Bab</div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${totalChapterOtomatis} Chapter</div>
                         </div>
                     </div>
                 `;
@@ -196,7 +196,6 @@
             renderPageLayout();
         }
 
-        // FUNGSI KHUSUS UNTUK MERENDER GAMBAR (DIPANGGIL SAAT KLIK, BACK, ATAU FORWARD)
         function renderChapterImages(chNum) {
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
             if (!chapter) return;
@@ -239,7 +238,6 @@
             window.scrollTo(0,0);
         }
 
-        // SINKRONISASI TOTAL SAAT TOMBOL MAJU (FORWARD) ATAU MUNDUR (BACK) SITES DIKLIK
         window.onpopstate = function(event) {
             const state = history.state;
             if (state) {
@@ -247,7 +245,6 @@
                     setComicDatabase(state.comicId);
                 }
                 if (state.page === 'readerPage' && state.chNum) {
-                    // Paksa sistem merender ulang konten gambar manga saat mendeteksi tombol maju/mundur browser
                     renderChapterImages(state.chNum);
                 }
                 if (state.page === 'detailPage' && state.comicId) {
