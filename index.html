@@ -100,7 +100,7 @@
 
     <div id="detailPage" class="page-overlay">
         <div class="page-content">
-            <button class="btn-back" onclick="aksiDenganIklan(() => changePage('detailPage', 'mainMenu'))">← Kembali ke Utama</button>
+            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Kembali ke Utama</button>
             <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Judul Komik</h2>
             <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;"></p>
             <h3>Pilih Chapter:</h3>
@@ -110,7 +110,7 @@
 
     <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;">
         <div style="padding: 20px 20px 0 20px; max-width: 700px; margin: 0 auto;">
-            <button class="btn-back" onclick="aksiDenganIklan(() => exitReader())">← Daftar Chapter</button>
+            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Daftar Chapter</button>
         </div>
 
         <div class="nav-wrapper" id="topNavArea"></div>
@@ -137,10 +137,8 @@
 
         function displayComics(data) {
             const list = document.getElementById('comicList');
-            
             list.innerHTML = data.map(c => {
                 let totalBabOtomatis = 0;
-                
                 if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') {
                     totalBabOtomatis = chapters_opm.length;
                 } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
@@ -161,6 +159,7 @@
             }).join('');
         }
 
+        // KETIK USER KLIK KOMIK -> INPUT JEJAK HISTORY BARU
         function openDetail(id) {
             const comic = comics.find(c => c.id === id);
             currentComicId = id;
@@ -182,9 +181,12 @@
                 </div>
             `).join('');
 
-            changePage('mainMenu', 'detailPage');
+            // Trik Inti: Push data halaman ke history browser
+            history.pushState({ page: 'detailPage', comicId: id }, "");
+            renderPageLayout();
         }
 
+        // KETIK USER KLIK CHAPTER -> INPUT JEJAK HISTORY BARU
         function loadChapter(chNum) {
             const comic = comics.find(c => c.id === currentComicId);
             const chapter = currentChaptersData.find(ch => ch.chNum === chNum);
@@ -207,25 +209,46 @@
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
 
-            changePage('detailPage', 'readerPage');
+            // Trik Inti: Push data bab ke history browser
+            history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
+            renderPageLayout();
         }
 
-        function exitReader() {
-            document.getElementById('comicViewerArea').innerHTML = ""; 
-            changePage('readerPage', 'detailPage');
-        }
+        // FUNGSI UTAMA UNTUK MENGATUR TAMPILAN SESUAI JEJAK HISTORY BROWSER
+        function renderPageLayout() {
+            const state = history.state;
+            
+            // Sembunyikan semua halaman terlebih dahulu
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('detailPage').style.display = 'none';
+            document.getElementById('readerPage').style.display = 'none';
 
-        function changePage(fromId, toId) {
-            document.getElementById(fromId).style.display = 'none';
-            document.getElementById(toId).style.display = 'block';
+            if (!state) {
+                // Jika state kosong (Berarti ada di menu utama)
+                document.getElementById('mainMenu').style.display = 'block';
+                document.getElementById('comicViewerArea').innerHTML = "";
+            } else if (state.page === 'detailPage') {
+                document.getElementById('detailPage').style.display = 'block';
+                document.getElementById('comicViewerArea').innerHTML = "";
+            } else if (state.page === 'readerPage') {
+                document.getElementById('readerPage').style.display = 'block';
+            }
             window.scrollTo(0,0);
         }
 
+        // DETEKSI OTOMATIS TOMBOL BACK DI BROWSER / HP
+        window.onpopstate = function(event) {
+            // Ketika user menekan tombol back fisik, sinkronkan ulang datanya
+            if (history.state && history.state.page === 'detailPage') {
+                currentComicId = history.state.comicId;
+            }
+            renderPageLayout();
+        };
+
         function goHome() {
-            document.getElementById('comicViewerArea').innerHTML = "";
-            document.getElementById('detailPage').style.display = 'none';
-            document.getElementById('readerPage').style.display = 'none';
-            document.getElementById('mainMenu').style.display = 'block';
+            // Jika ingin kembali ke rumah lewat logo, reset history ke awal
+            history.pushState(null, "");
+            renderPageLayout();
         }
 
         function searchComic() {
@@ -234,6 +257,8 @@
         }
 
         window.onload = function() {
+            // Set state awal saat web pertama kali dimuat
+            history.replaceState(null, "");
             displayComics(comics);
         };
     </script>
