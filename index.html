@@ -363,9 +363,19 @@
             }).join('');
         }
 
+        // PERBAIKAN LOGIKA: Benar-benar fokus memproses satu episode saja
         function loadChapter(chNum) {
+            // 1. Bersihkan viewer secara instan agar memori browser kembali kosong
+            const viewer = document.getElementById('comicViewerArea');
+            viewer.innerHTML = ""; 
+
+            // 2. Simpan riwayat & perbarui database komik aktif
             simpanKeRiwayatBaca(currentComicId, chNum);
+            
+            // 3. Render gambar murni dari objek episode target saja
             renderChapterImages(chNum);
+            
+            // 4. Ubah state history
             history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
             renderPageLayout();
         }
@@ -381,9 +391,8 @@
             if (!chapter) return;
 
             const viewer = document.getElementById('comicViewerArea');
-            viewer.innerHTML = ""; 
             
-            // Render gambar langsung
+            // HANYA memproses array milik chapter ini saja, sisa DOM dibuang bersih.
             viewer.innerHTML = chapter.images.map(imgUrl => `
                 <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
             `).join('');
@@ -391,7 +400,6 @@
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            // FIX UTAMA: Tombol navigasi dibuat langsung memicu loadChapter murni agar tidak diblokir browser setelah klik ke-3!
             let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="loadChapter(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
             let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="loadChapter(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
