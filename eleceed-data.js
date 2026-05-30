@@ -8379,6 +8379,23 @@ const chapters_eleceed = [
 		]
 	},
 	{		
+		chNum: 122,	
+		title: "Ch. 122",	
+		images: [	
+			"https://i.imgur.com/5MwJMe0.jpeg",
+			"https://i.imgur.com/fVK1SXZ.jpeg",
+			"https://i.imgur.com/7LEoo7p.jpeg",
+			"https://i.imgur.com/D3sXrYH.jpeg",
+			"https://i.imgur.com/pFj1WJG.jpeg",
+			"https://i.imgur.com/APUqLvr.jpeg",
+			"https://i.imgur.com/2Hu7GEd.jpeg",
+			"https://i.imgur.com/7rrQtrH.jpeg",
+			"https://i.imgur.com/cmEMVaa.jpeg",
+			"https://i.imgur.com/ulazYVd.jpeg",
+			"https://i.imgur.com/CkV9VrX.jpeg"
+		]
+	},
+	{		
 		chNum: 123,	
 		title: "Ch. 123",	
 		images: [	
