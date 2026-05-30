@@ -333,8 +333,35 @@
         function openDetail(id) {
             setComicDatabase(id);
             const comic = comics.find(c => c.id === id);
-            document.getElementById('detailTitle').innerText = comic.title;
-            document.getElementById('detailDesc').innerText = comic.desc;
+            
+            // TAMPILKAN POSTER (GAMBAR), JUDUL, DAN DESKRIPSI DI ATAS DAFTAR EPISODE
+            const oldPoster = document.getElementById('detailPosterImg');
+            if(oldPoster) oldPoster.remove();
+
+            const imgPoster = document.createElement('img');
+            imgPoster.id = 'detailPosterImg';
+            imgPoster.src = comic.poster;
+            imgPoster.style.width = "180px";
+            imgPoster.style.height = "260px";
+            imgPoster.style.objectFit = "cover";
+            imgPoster.style.borderRadius = "10px";
+            imgPoster.style.display = "block";
+            imgPoster.style.margin = "0 auto 20px auto";
+            imgPoster.style.border = "2px solid var(--primary)";
+            imgPoster.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
+
+            const titleElement = document.getElementById('detailTitle');
+            titleElement.parentNode.insertBefore(imgPoster, titleElement);
+
+            titleElement.innerText = comic.title;
+            titleElement.style.textAlignment = "center"; 
+            titleElement.style.textAlign = "center";
+            
+            const descElement = document.getElementById('detailDesc');
+            descElement.innerText = comic.desc;
+            descElement.style.textAlign = "center";
+
+            // MUAT DAFTAR EPISODE
             const epListArea = document.getElementById('episodeListArea');
             const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
             
