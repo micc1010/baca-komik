@@ -281,7 +281,7 @@
         }
 
         // =================================================================
-        // MAIN WEBSITE ENGINE NAVIGATION (BUG-FREE VERSION)
+        // SYSTEM NAVIGATION & DIRECT LINK AD SYSTEM
         // =================================================================
         const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
 
@@ -371,7 +371,6 @@
         }
 
         function renderChapterImages(chNum) {
-            // FIX 2: Selalu paksa refresh set ulang database komik agar data array tidak pincang/tersesat saat diklik berulang kali
             if(history.state && history.state.comicId) {
                 setComicDatabase(history.state.comicId);
             } else if (currentComicId) {
@@ -384,17 +383,17 @@
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = ""; 
             
-            setTimeout(() => {
-                viewer.innerHTML = chapter.images.map(imgUrl => `
-                    <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
-                `).join('');
-            }, 50);
+            // Render gambar langsung
+            viewer.innerHTML = chapter.images.map(imgUrl => `
+                <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
+            `).join('');
 
             const hasPrev = currentChaptersData.some(ch => ch.chNum === chNum - 1);
             const hasNext = currentChaptersData.some(ch => ch.chNum === chNum + 1);
 
-            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="aksiDenganIklan(() => loadChapter(${chNum - 1}))">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
-            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="aksiDenganIklan(() => loadChapter(${chNum + 1}))">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
+            // FIX UTAMA: Tombol navigasi dibuat langsung memicu loadChapter murni agar tidak diblokir browser setelah klik ke-3!
+            let prevBtnHtml = hasPrev ? `<button class="btn-nav btn-prev" onclick="loadChapter(${chNum - 1})">← Prev Chapter ${chNum - 1}</button>` : `<div style="flex:1;"></div>`;
+            let nextBtnHtml = hasNext ? `<button class="btn-nav btn-next" onclick="loadChapter(${chNum + 1})">Next Chapter ${chNum + 1} →</button>` : `<div style="flex:1;"></div>`;
 
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
@@ -402,7 +401,6 @@
             muatKomentarKolektif(currentComicId, chNum);
         }
 
-        // FUNGSI NAVIGASI PAKSA AMAN (MENGHINDARI BUG POPSTATE BROWSER)
         function kembalikeDetailEp() {
             segarkanDaftarEpisodeHTML(); 
             history.pushState({ page: 'detailPage', comicId: currentComicId }, "");
