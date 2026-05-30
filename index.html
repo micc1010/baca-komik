@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KomikIndo Web - Pembaca Vertikal Ringan</title>
+    <title>ComicIndo Web - Lightweight Vertical Reader</title>
     <style>
         :root {
             --primary: #ff5722; 
@@ -70,7 +70,6 @@
         .btn-next { background: var(--primary); }
         .btn-next:hover { background: #e64a19; }
 
-        /* GAYA TOMBOL TERBANG KE ATAS - Z-INDEX DIATUR MAKSIMAL */
         .btn-to-top {
             display: none; position: fixed; bottom: 30px; right: 30px; z-index: 9999;
             background: var(--primary); color: white; border: none; width: 50px; height: 50px;
@@ -78,50 +77,62 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.6); transition: 0.3s; line-height: 46px; text-align: center;
         }
         .btn-to-top:hover { transform: scale(1.1); background: #e64a19; }
+
+        /* COMMENTS & AUTH STYLING */
+        .comment-section { max-width: 700px; margin: 30px auto; background: var(--card-bg); padding: 20px; border-radius: 10px; color: #fff; text-align: left; }
+        .comment-section h3 { margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .auth-box { background: #222533; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 25px; }
+        .auth-box input { width: 100%; padding: 10px; margin: 8px 0; background: #131520; border: 1px solid #33384f; color: #fff; border-radius: 5px; }
+        .btn-auth { background: var(--primary); color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; }
+        .btn-google { background: #4285F4; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px; }
+        .comment-input-area textarea { width: 100%; height: 80px; padding: 10px; background: #222533; border: 1px solid #33384f; color: #fff; border-radius: 6px; resize: none; margin-bottom: 10px; }
+        .comment-list { margin-top: 20px; max-height: 400px; overflow-y: auto; }
+        .comment-item { background: #222533; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        .comment-user { font-weight: bold; font-size: 14px; color: var(--primary); margin-bottom: 4px; }
+        .comment-text { font-size: 14px; color: #e0e0e0; word-wrap: break-word; }
+        .comment-time { font-size: 11px; color: var(--text-muted); text-align: right; margin-top: 5px; }
     </style>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
     <button id="scrollToTopBtn" class="btn-to-top" onclick="scrollToTop()">▲</button>
 
     <header>
-        <h1 onclick="aksiDenganIklan(() => goHome())">KomikIndo Web</h1>
+        <h1 onclick="aksiDenganIklan(() => goHome())">ComicIndo Web</h1>
         <div class="search-container">
-            <input type="text" id="searchInput" onkeyup="searchComic()" placeholder="Cari komik...">
+            <input type="text" id="searchInput" onkeyup="searchComic()" placeholder="Search comics...">
         </div>
     </header>
 
     <div class="container" id="mainMenu">
         <div class="ad-space">
             <script type="text/javascript">
-                atOptions = {
-                    'key' : '223bb73deddb6f2aeb053d91b5a64e28',
-                    'format' : 'iframe',
-                    'height' : 50,
-                    'width' : 320,
-                    'params' : {}
-                };
+                atOptions = { 'key' : '223bb73deddb6f2aeb053d91b5a64e28', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };
             </script>
             <script type="text/javascript" src="https://www.highperformanceformat.com/223bb73deddb6f2aeb053d91b5a64e28/invoke.js"></script>
         </div>
         
-        <h2 style="margin-bottom: 20px;">Update Manga Terbaru</h2>
+        <h2 style="margin-bottom: 20px;">Latest Manga Updates</h2>
         <div class="comic-grid" id="comicList"></div>
     </div>
 
     <div id="detailPage" class="page-overlay" onscroll="pantauScroll(this)">
         <div class="page-content">
-            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Kembali ke Utama</button>
-            <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Judul Komik</h2>
+            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Back to Main</button>
+            <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Comic Title</h2>
             <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;"></p>
-            <h3>Pilih Chapter:</h3>
+            <h3>Select Chapter:</h3>
             <div class="episode-list" id="episodeListArea"></div>
         </div>
     </div>
 
     <div id="readerPage" class="page-overlay" style="background: #000; padding: 0;" onscroll="pantauScroll(this)">
         <div style="padding: 20px 20px 0 20px; max-width: 700px; margin: 0 auto;">
-            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Daftar Chapter</button>
+            <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Chapter List</button>
         </div>
 
         <div class="nav-wrapper" id="topNavArea"></div>
@@ -131,8 +142,31 @@
         </div>
 
         <div class="nav-wrapper" id="bottomNavArea" style="margin-top: 20px; padding-bottom: 20px;"></div>
+
+        <div class="comment-section">
+            <h3 id="commentHeader">Comments</h3>
+            
+            <div id="authContainer" class="auth-box">
+                <p style="font-size: 14px; margin-bottom: 10px; color: var(--text-muted);">Please sign in to share your thoughts about this chapter:</p>
+                <input type="email" id="authEmail" placeholder="Gmail / Email Address">
+                <input type="password" id="authPassword" placeholder="Password (Min 6 Characters)">
+                <button class="btn-auth" onclick="loginEmail()">Sign In / Sign Up Manually</button>
+                <div style="margin: 10px 0; font-size: 12px; color: #555;">─ OR QUICK SIGN IN WITH GOOGLE ─</div>
+                <button class="btn-google" onclick="loginGoogle()">Sign In with Google</button>
+            </div>
+
+            <div id="commentInputArea" class="comment-input-area" style="display: none;">
+                <p id="welcomeUser" style="font-size:13px; color: var(--text-muted); margin-bottom: 10px;"></p>
+                <textarea id="commentTextarea" placeholder="Write a respectful comment here..."></textarea>
+                <button class="btn-auth" style="width: auto; padding: 10px 25px; float: right;" onclick="kirimKomentar()">Post Comment</button>
+                <button class="btn-back" style="padding: 5px 10px; font-size: 11px; margin-top: 10px;" onclick="logoutFirebase()">Sign Out</button>
+                <div style="clear: both;"></div>
+            </div>
+
+            <div class="comment-list" id="boxListKomentar"></div>
+        </div>
         <div style="max-width: 700px; margin: 0 auto 40px auto; padding: 0 20px;">
-            <button class="btn-back" style="width: 100%; padding: 14px; font-weight: bold;" onclick="aksiDenganIklan(() => history.back())">← Daftar Chapter</button>
+            <button class="btn-back" style="width: 100%; padding: 14px; font-weight: bold;" onclick="aksiDenganIklan(() => history.back())">← Chapter List</button>
         </div>
     </div>
 
@@ -142,6 +176,122 @@
     <script src="eleceed-data.js"></script>
 
     <script>
+        // ======= YOUR REAL LIVE FIREBASE CONFIGURATION COPIED SUCCESSFULLY =======
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEHg-7GmfAMPONG4rz7sFeRIIcpahoYpA",
+            authDomain: "webkomikindo.firebaseapp.com",
+            databaseURL: "https://webkomikindo-default-rtdb.firebaseio.com",
+            projectId: "webkomikindo",
+            storageBucket: "webkomikindo.firebasestorage.app",
+            messagingSenderId: "566419496642",
+            appId: "1:566419496642:web:3e9b40a4b185c46835a55b"
+        };
+        // =========================================================================
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let userSekarang = null;
+        let currentChapterGlobal = null;
+
+        // Monitor Auth State Changes
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                userSekarang = user;
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('commentInputArea').style.display = 'block';
+                document.getElementById('welcomeUser').innerText = "Signed in as: " + (user.displayName || user.email);
+            } else {
+                userSekarang = null;
+                document.getElementById('authContainer').style.display = 'block';
+                document.getElementById('commentInputArea').style.display = 'none';
+            }
+        });
+
+        // Email & Password Auth
+        function loginEmail() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            if(!email || !password) { alert("Please enter both email and password!"); return; }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                        // Automatically try to create an account if sign-in fails
+                        return auth.createUserWithEmailAndPassword(email, password);
+                    } else {
+                        alert("Authentication Failed: " + error.message);
+                    }
+                });
+        }
+
+        // Google Authentication
+        function loginGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch((error) => {
+                alert("Google Sign-In Failed: " + error.message);
+            });
+        }
+
+        // Sign Out
+        function logoutFirebase() {
+            auth.signOut();
+        }
+
+        // Send Comment to Firebase Realtime Database
+        function kirimKomentar() {
+            const teks = document.getElementById('commentTextarea').value.trim();
+            if(!teks) { alert("Comment cannot be empty!"); return; }
+            if(!currentComicId || !currentChapterGlobal) return;
+
+            const pathID = currentComicId + "_ch_" + currentChapterGlobal;
+            const databaseRef = database.ref('komentar/' + pathID);
+
+            databaseRef.push({
+                nama: userSekarang.displayName || userSekarang.email.split('@')[0],
+                pesan: teks,
+                waktu: new Date().toLocaleString('en-US', { hour12: true })
+            }).then(() => {
+                document.getElementById('commentTextarea').value = ""; 
+            });
+        }
+
+        // Load Comments in Realtime
+        function muatKomentarKolektif(comicId, chNum) {
+            currentChapterGlobal = chNum;
+            document.getElementById('commentHeader').innerText = "Comments (Chapter " + chNum + ")";
+            
+            const pathID = comicId + "_ch_" + chNum;
+            const databaseRef = database.ref('komentar/' + pathID);
+
+            databaseRef.on('value', (snapshot) => {
+                const box = document.getElementById('boxListKomentar');
+                box.innerHTML = "";
+                const data = snapshot.val();
+                
+                if (data) {
+                    const keys = Object.keys(data).reverse();
+                    keys.forEach(key => {
+                        box.innerHTML += `
+                            <div class="comment-item">
+                                <div class="comment-user">@${data[key].nama}</div>
+                                <div class="comment-text">${data[key].pesan}</div>
+                                <div class="comment-time">${data[key].waktu}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    box.innerHTML = `<p style="text-align:center; color:#555; font-size:13px; padding:20px 0;">No comments on this chapter yet. Be the first to say something!</p>`;
+                }
+            });
+        }
+
+        // =================================================================
+        // MAIN WEBSITE ENGINE NAVIGATION
+        // =================================================================
         const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
 
         function aksiDenganIklan(callbackAksi) {
@@ -153,20 +303,16 @@
             const list = document.getElementById('comicList');
             list.innerHTML = data.map(c => {
                 let totalChapterOtomatis = 0;
-                if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') {
-                    totalChapterOtomatis = chapters_opm.length;
-                } else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') {
-                    totalChapterOtomatis = chapters_sololeveling.length;
-                } else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') {
-                    totalChapterOtomatis = chapters_eleceed.length;
-                }
+                if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') { totalChapterOtomatis = chapters_opm.length; } 
+                else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') { totalChapterOtomatis = chapters_sololeveling.length; } 
+                else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') { totalChapterOtomatis = chapters_eleceed.length; }
 
                 return `
                     <div class="comic-card" onclick="aksiDenganIklan(() => openDetail('${c.id}'))">
                         <img src="${c.poster}" class="comic-poster">
                         <div class="comic-info">
                             <div style="font-weight:bold; font-size:14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.title}</div>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${totalChapterOtomatis} Chapter</div>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:5px;">Total: ${totalChapterOtomatis} Chapters</div>
                         </div>
                     </div>
                 `;
@@ -187,10 +333,8 @@
         function openDetail(id) {
             setComicDatabase(id);
             const comic = comics.find(c => c.id === id);
-            
             document.getElementById('detailTitle').innerText = comic.title;
             document.getElementById('detailDesc').innerText = comic.desc;
-            
             const epListArea = document.getElementById('episodeListArea');
             const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
             
@@ -231,15 +375,17 @@
 
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
+
+            // Trigger Firebase Realtime Comments
+            muatKomentarKolektif(currentComicId, chNum);
         }
 
         function renderPageLayout() {
             const state = history.state;
-            
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('detailPage').style.display = 'none';
             document.getElementById('readerPage').style.display = 'none';
-            document.getElementById("scrollToTopBtn").style.display = "none"; // Sembunyikan tombol saat ganti menu
+            document.getElementById("scrollToTopBtn").style.display = "none";
 
             if (!state) {
                 document.getElementById('mainMenu').style.display = 'block';
@@ -257,12 +403,8 @@
         window.onpopstate = function(event) {
             const state = history.state;
             if (state) {
-                if (state.comicId) {
-                    setComicDatabase(state.comicId);
-                }
-                if (state.page === 'readerPage' && state.chNum) {
-                    renderChapterImages(state.chNum);
-                }
+                if (state.comicId) { setComicDatabase(state.comicId); }
+                if (state.page === 'readerPage' && state.chNum) { renderChapterImages(state.chNum); }
                 if (state.page === 'detailPage' && state.comicId) {
                     const comic = comics.find(c => c.id === state.comicId);
                     document.getElementById('detailTitle').innerText = comic.title;
@@ -270,68 +412,41 @@
                     const epListArea = document.getElementById('episodeListArea');
                     const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
                     epListArea.innerHTML = sortedChapters.map(ch => `
-                        <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
-                            ${ch.title}
-                        </div>
+                        <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">${ch.title}</div>
                     `).join('');
                 }
             }
             renderPageLayout();
         };
 
-        // FUNGSI UTAMA LOGIKA PELACAK SCROLL PADA SETIAP ELEMEN OVERLAY
         function pantauScroll(targetElemen) {
             const btnTop = document.getElementById("scrollToTopBtn");
-            if (targetElemen.scrollTop > 400) {
-                btnTop.style.display = "block";
-            } else {
-                btnTop.style.display = "none";
-            }
+            if (targetElemen.scrollTop > 400) { btnTop.style.display = "block"; } else { btnTop.style.display = "none"; }
         }
 
-        // PELACAK SCROLL UNTUK HALAMAN UTAMA (MENU UTAMA KETIK BELUM BUKA KOMIK)
         window.onscroll = function() {
             const btnTop = document.getElementById("scrollToTopBtn");
-            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
-                btnTop.style.display = "block";
-            } else {
-                if (document.getElementById('mainMenu').style.display === 'block') {
-                    btnTop.style.display = "none";
-                }
+            if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) { btnTop.style.display = "block"; } else {
+                if (document.getElementById('mainMenu').style.display === 'block') { btnTop.style.display = "none"; }
             }
         };
 
-        // KONTROL LOGIKA KLIK UNTUK TERBANG KE ATAS 
         function scrollToTop() {
             const detailPage = document.getElementById('detailPage');
             const readerPage = document.getElementById('readerPage');
-
-            if (readerPage.style.display === 'block') {
-                readerPage.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (detailPage.style.display === 'block') {
-                detailPage.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            if (readerPage.style.display === 'block') { readerPage.scrollTo({ top: 0, behavior: 'smooth' }); } 
+            else if (detailPage.style.display === 'block') { detailPage.scrollTo({ top: 0, behavior: 'smooth' }); } 
+            else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
         }
 
-        function goHome() {
-            history.pushState(null, "");
-            renderPageLayout();
-        }
-
+        function goHome() { history.pushState(null, ""); renderPageLayout(); }
         function searchComic() {
             const q = document.getElementById('searchInput').value.toLowerCase();
             displayComics(comics.filter(c => c.title.toLowerCase().includes(q)));
         }
 
-        window.onload = function() {
-            history.replaceState(null, "");
-            displayComics(comics);
-        };
+        window.onload = function() { history.replaceState(null, ""); displayComics(comics); };
     </script>
-
     <script src="https://pl29491050.effectivecpmnetwork.com/54/1e/72/541e727447ceacba8ba2f42a3e336dc0.js"></script>
-
 </body>
 </html>
