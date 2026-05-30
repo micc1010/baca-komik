@@ -54,9 +54,19 @@
         .btn-back { background: #333; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
         .btn-back:hover { background: #555; }
 
+        /* STRUKTUR TATA LETAK DETAIL KIRI */
+        .detail-header-flex { display: flex; gap: 25px; margin-bottom: 30px; align-items: flex-start; }
+        .detail-info-text { flex: 1; }
+
         .episode-list { margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-        .episode-item { background: #222533; padding: 12px; border-radius: 6px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 14px; }
+        
+        /* TOMBOL EPISODE STANDAR */
+        .episode-item { background: #222533; padding: 12px; border-radius: 6px; cursor: pointer; text-align: center; transition: 0.3s; font-size: 14px; color: #fff; }
         .episode-item:hover { background: var(--primary); }
+        
+        /* TOMBOL EPISODE YANG SUDAH DIBACA (LEBIH GELAP) */
+        .episode-item.sudah-dibaca { background: #131520; color: #5a6275; border: 1px dashed #2c3045; }
+        .episode-item.sudah-dibaca:hover { background: #1a1d2c; color: #fff; }
 
         .reader-container { max-width: 700px; margin: 0 auto; text-align: center; }
         .comic-image-wrapper { width: 100%; background: #000; }
@@ -123,9 +133,16 @@
     <div id="detailPage" class="page-overlay" onscroll="pantauScroll(this)">
         <div class="page-content">
             <button class="btn-back" onclick="aksiDenganIklan(() => history.back())">← Back to Main</button>
-            <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 10px;">Comic Title</h2>
-            <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.6;"></p>
-            <h3>Select Chapter:</h3>
+            
+            <div class="detail-header-flex">
+                <img id="detailPosterImg" src="" style="width: 160px; height: 230px; object-fit: cover; border-radius: 8px; border: 2px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                <div class="detail-info-text">
+                    <h2 id="detailTitle" style="color: var(--primary); margin-bottom: 12px; font-size: 26px; text-align: left;">Comic Title</h2>
+                    <p id="detailDesc" style="color: var(--text-muted); font-size: 14px; line-height: 1.6; text-align: left;">Comic description will go here.</p>
+                </div>
+            </div>
+
+            <h3 style="border-top: 1px solid #333; padding-top: 20px;">Select Chapter:</h3>
             <div class="episode-list" id="episodeListArea"></div>
         </div>
     </div>
@@ -210,17 +227,13 @@
             }
         });
 
-        // Email & Password Auth
         function loginEmail() {
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
-
             if(!email || !password) { alert("Please enter both email and password!"); return; }
-
             auth.signInWithEmailAndPassword(email, password)
                 .catch((error) => {
                     if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                        // Automatically try to create an account if sign-in fails
                         return auth.createUserWithEmailAndPassword(email, password);
                     } else {
                         alert("Authentication Failed: " + error.message);
@@ -228,7 +241,6 @@
                 });
         }
 
-        // Google Authentication
         function loginGoogle() {
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider).catch((error) => {
@@ -236,12 +248,8 @@
             });
         }
 
-        // Sign Out
-        function logoutFirebase() {
-            auth.signOut();
-        }
+        function logoutFirebase() { auth.signOut(); }
 
-        // Send Comment to Firebase Realtime Database
         function kirimKomentar() {
             const teks = document.getElementById('commentTextarea').value.trim();
             if(!teks) { alert("Comment cannot be empty!"); return; }
@@ -259,7 +267,6 @@
             });
         }
 
-        // Load Comments in Realtime
         function muatKomentarKolektif(comicId, chNum) {
             currentChapterGlobal = chNum;
             document.getElementById('commentHeader').innerText = "Comments (Chapter " + chNum + ")";
@@ -290,7 +297,7 @@
         }
 
         // =================================================================
-        // MAIN WEBSITE ENGINE NAVIGATION
+        // MAIN WEBSITE ENGINE NAVIGATION & HISTORY SYSTEM
         // =================================================================
         const URL_DIRECT_LINK = "https://www.effectivecpmnetwork.com/pn5sfcnibb?key=1f3d67adb73628195167dc75539db295"; 
 
@@ -330,52 +337,56 @@
             else { currentChaptersData = []; }
         }
 
+        // FUNGSI CEK RIWAYAT PEMBACAAN DI LOCALSTORAGE
+        function dapatkanRiwayatBaca(comicId) {
+            const riwayatRaw = localStorage.getItem('riwayat_komik_' + comicId);
+            return riwayatRaw ? JSON.parse(riwayatRaw) : [];
+        }
+
+        // FUNGSI SIMPAN RIWAYAT PEMBACAAN KE LOCALSTORAGE
+        function simpanKeRiwayatBaca(comicId, chNum) {
+            let listBab = dapatkanRiwayatBaca(comicId);
+            if (!listBab.includes(chNum)) {
+                listBab.push(chNum);
+                localStorage.setItem('riwayat_komik_' + comicId, JSON.stringify(listBab));
+            }
+        }
+
         function openDetail(id) {
             setComicDatabase(id);
             const comic = comics.find(c => c.id === id);
             
-            // TAMPILKAN POSTER (GAMBAR), JUDUL, DAN DESKRIPSI DI ATAS DAFTAR EPISODE
-            const oldPoster = document.getElementById('detailPosterImg');
-            if(oldPoster) oldPoster.remove();
+            // SET POSTER, JUDUL, DESKRIPSI DI SEBELAH KIRI
+            document.getElementById('detailPosterImg').src = comic.poster;
+            document.getElementById('detailTitle').innerText = comic.title;
+            document.getElementById('detailDesc').innerText = comic.desc;
 
-            const imgPoster = document.createElement('img');
-            imgPoster.id = 'detailPosterImg';
-            imgPoster.src = comic.poster;
-            imgPoster.style.width = "180px";
-            imgPoster.style.height = "260px";
-            imgPoster.style.objectFit = "cover";
-            imgPoster.style.borderRadius = "10px";
-            imgPoster.style.display = "block";
-            imgPoster.style.margin = "0 auto 20px auto";
-            imgPoster.style.border = "2px solid var(--primary)";
-            imgPoster.style.boxShadow = "0 4px 15px rgba(0,0,0,0.5)";
+            // AMBIL DATA EPISODE YANG SUDAH PERNAH DIBACA
+            const listSudahDibaca = dapatkanRiwayatBaca(id);
 
-            const titleElement = document.getElementById('detailTitle');
-            titleElement.parentNode.insertBefore(imgPoster, titleElement);
-
-            titleElement.innerText = comic.title;
-            titleElement.style.textAlignment = "center"; 
-            titleElement.style.textAlign = "center";
-            
-            const descElement = document.getElementById('detailDesc');
-            descElement.innerText = comic.desc;
-            descElement.style.textAlign = "center";
-
-            // MUAT DAFTAR EPISODE
+            // MUAT DAFTAR EPISODE DENGAN CEK KLIK SEBELUMNYA
             const epListArea = document.getElementById('episodeListArea');
             const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
             
-            epListArea.innerHTML = sortedChapters.map(ch => `
-                <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
-                    ${ch.title}
-                </div>
-            `).join('');
+            epListArea.innerHTML = sortedChapters.map(ch => {
+                // Berikan class 'sudah-dibaca' (lebih gelap) jika chapter ini ada di riwayat
+                const isRead = listSudahDibaca.includes(ch.chNum) ? "sudah-dibaca" : "";
+                
+                return `
+                    <div class="episode-item ${isRead}" id="btn-ch-${ch.chNum}" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">
+                        ${ch.title}
+                    </div>
+                `;
+            }).join('');
 
             history.pushState({ page: 'detailPage', comicId: id }, "");
             renderPageLayout();
         }
 
         function loadChapter(chNum) {
+            // Simpan nomor chapter ke riwayat lokal saat di-klik
+            simpanKeRiwayatBaca(currentComicId, chNum);
+            
             renderChapterImages(chNum);
             history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
             renderPageLayout();
@@ -403,7 +414,6 @@
             document.getElementById('topNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
             document.getElementById('bottomNavArea').innerHTML = prevBtnHtml + nextBtnHtml;
 
-            // Trigger Firebase Realtime Comments
             muatKomentarKolektif(currentComicId, chNum);
         }
 
@@ -434,13 +444,18 @@
                 if (state.page === 'readerPage' && state.chNum) { renderChapterImages(state.chNum); }
                 if (state.page === 'detailPage' && state.comicId) {
                     const comic = comics.find(c => c.id === state.comicId);
+                    document.getElementById('detailPosterImg').src = comic.poster;
                     document.getElementById('detailTitle').innerText = comic.title;
                     document.getElementById('detailDesc').innerText = comic.desc;
+                    
+                    const listSudahDibaca = dapatkanRiwayatBaca(state.comicId);
                     const epListArea = document.getElementById('episodeListArea');
                     const sortedChapters = [...currentChaptersData].sort((a, b) => b.chNum - a.chNum);
-                    epListArea.innerHTML = sortedChapters.map(ch => `
-                        <div class="episode-item" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">${ch.title}</div>
-                    `).join('');
+                    
+                    epListArea.innerHTML = sortedChapters.map(ch => {
+                        const isRead = listSudahDibaca.includes(ch.chNum) ? "sudah-dibaca" : "";
+                        return `<div class="episode-item ${isRead}" id="btn-ch-${ch.chNum}" onclick="aksiDenganIklan(() => loadChapter(${ch.chNum}))">${ch.title}</div>`;
+                    }).join('');
                 }
             }
             renderPageLayout();
