@@ -188,8 +188,7 @@
     <script src="opm-data.js"></script>
     <script src="sololeveling-data.js"></script>
     <script src="eleceed-data.js"></script>
-
-    <script>
+    <script src="mercenaryenrollment-data.js"></script> <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBEHg-7GmfAMPONG4rz7sFeRIIcpahoYpA",
             authDomain: "webkomikindo.firebaseapp.com",
@@ -297,6 +296,7 @@
                 if (c.id === "one-punch-man" && typeof chapters_opm !== 'undefined') { totalChapterOtomatis = chapters_opm.length; } 
                 else if (c.id === "solo-leveling" && typeof chapters_sololeveling !== 'undefined') { totalChapterOtomatis = chapters_sololeveling.length; } 
                 else if (c.id === "eleceed" && typeof chapters_eleceed !== 'undefined') { totalChapterOtomatis = chapters_eleceed.length; }
+                else if (c.id === "mercenary-enrollment" && typeof chapters_mercenaryenrollment !== 'undefined') { totalChapterOtomatis = chapters_mercenaryenrollment.length; } // TAMBAHAN 2: Hitung total chapter otomatis di beranda
 
                 return `
                     <div class="comic-card" onclick="aksiDenganIklan(() => openDetail('${c.id}'))">
@@ -318,6 +318,7 @@
             if (id === "one-punch-man") { currentChaptersData = chapters_opm; } 
             else if (id === "solo-leveling") { currentChaptersData = chapters_sololeveling; } 
             else if (id === "eleceed") { currentChaptersData = chapters_eleceed; }
+            else if (id === "mercenary-enrollment") { currentChaptersData = chapters_mercenaryenrollment; } // TAMBAHAN 3: Hubungkan id ke data array di file js barunya
             else { currentChaptersData = []; }
         }
 
@@ -363,19 +364,13 @@
             }).join('');
         }
 
-        // PERBAIKAN LOGIKA: Benar-benar fokus memproses satu episode saja
         function loadChapter(chNum) {
-            // 1. Bersihkan viewer secara instan agar memori browser kembali kosong
             const viewer = document.getElementById('comicViewerArea');
             viewer.innerHTML = ""; 
 
-            // 2. Simpan riwayat & perbarui database komik aktif
             simpanKeRiwayatBaca(currentComicId, chNum);
-            
-            // 3. Render gambar murni dari objek episode target saja
             renderChapterImages(chNum);
             
-            // 4. Ubah state history
             history.pushState({ page: 'readerPage', chNum: chNum, comicId: currentComicId }, "");
             renderPageLayout();
         }
@@ -392,7 +387,6 @@
 
             const viewer = document.getElementById('comicViewerArea');
             
-            // HANYA memproses array milik chapter ini saja, sisa DOM dibuang bersih.
             viewer.innerHTML = chapter.images.map(imgUrl => `
                 <img src="${imgUrl}" class="comic-page-img" alt="Manga Page">
             `).join('');

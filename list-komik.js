@@ -17,5 +17,11 @@ const comics = [
         title: "Eleceed",
         poster: "https://i.imgur.com/Cy7UKQi.jpeg",
         desc: "Kaiden Pengguna kemampuan misterius yang bersembunyi di dalam tubuh kucing jalanan. Dia kemudian dijemput oleh Jiwoo setelah terluka setelah berkelahi dengan pengguna kemampuan lain. Ia memiliki kepribadian yang keras kepala dan suka memerintah. Jiwoo – anak SMA yang energik dan banyak bicara yang suka kucing. Ia sangat baik dan juga tampaknya memiliki kemampuan khusus.",
+    },
+    {
+        id: "mercenary-enrollment",
+        title: "Mercenary Enrollment",
+        poster: "https://i.imgur.com/9CAAT1E.jpeg",
+        desc: "Yu Ijin adalah satu-satunya yang selamat dari kecelakaan pesawat saat dia masih kecil. Setelah menjadi tentara bayaran untuk bertahan hidup selama 10 tahun, ia kembali ke keluarganya di kampung halamannya.",
     }
 ];

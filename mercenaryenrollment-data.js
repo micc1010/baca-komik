@@ -1,0 +1,42 @@
+const chapters_mercenaryenrollment = [
+	{		
+		chNum: 1,	
+		title: "Ch. 0",	
+		images: [	
+			"https://i.imgur.com/VwnGDZh.jpeg",
+			"https://i.imgur.com/u9mT4RU.jpeg",
+			"https://i.imgur.com/4muzqKU.jpeg",
+			"https://i.imgur.com/yWvy3kz.jpeg",
+			"https://i.imgur.com/lWaVAOF.jpeg",
+			"https://i.imgur.com/mqDKZeR.jpeg",
+			"https://i.imgur.com/LUo44Nn.jpeg",
+			"https://i.imgur.com/pWLQw44.jpeg",
+			"https://i.imgur.com/nXXcrkY.jpeg",
+			"https://i.imgur.com/JklbyPp.jpeg",
+			"https://i.imgur.com/XenQHNP.jpeg",
+			"https://i.imgur.com/4ZV6u1t.jpeg",
+			"https://i.imgur.com/AQ080Ch.jpeg",
+			"https://i.imgur.com/mDiymLf.jpeg",
+			"https://i.imgur.com/Jclj7Fn.jpeg",
+			"https://i.imgur.com/AXDTvk2.jpeg",
+			"https://i.imgur.com/PKCkfMN.jpeg",
+			"https://i.imgur.com/W8vN1pF.jpeg",
+			"https://i.imgur.com/jvL60el.jpeg",
+			"https://i.imgur.com/VwBq5hr.jpeg",
+			"https://i.imgur.com/87aO9IV.jpeg",
+			"https://i.imgur.com/r2GAXJX.jpeg",
+			"https://i.imgur.com/YTDZaoU.jpeg",
+			"https://i.imgur.com/FzlC6qu.jpeg",
+			"https://i.imgur.com/msq7eGZ.jpeg",
+			"https://i.imgur.com/Ee7covr.jpeg",
+			"https://i.imgur.com/wetGqap.jpeg",
+			"https://i.imgur.com/SBdJsEr.jpeg",
+			"https://i.imgur.com/Db6bM6t.jpeg",
+			"https://i.imgur.com/8PY1xHX.jpeg",
+			"https://i.imgur.com/XnKf63o.jpeg",
+			"https://i.imgur.com/F5vmR4Q.jpeg",
+			"https://i.imgur.com/Qfaqc6q.jpeg",
+			"https://i.imgur.com/u6TqLHB.jpeg"
+		]	
+	}
+]
