@@ -8211,5 +8211,49 @@ const chapters_opm = [
 			"https://i.imgur.com/gOVFFsR.jpeg",
 			"https://i.imgur.com/E3F8TR4.jpeg"
 		]	
+	},
+	{		
+		chNum: 264,	
+		title: "Ch. chap 232",	
+		images: [	
+			"https://i.imgur.com/fSnNOm6.jpeg",
+			"https://i.imgur.com/rnU4LSX.jpeg",
+			"https://i.imgur.com/Wjz4Pz6.jpeg",
+			"https://i.imgur.com/HQyRAKz.jpeg",
+			"https://i.imgur.com/1lkz6l2.jpeg",
+			"https://i.imgur.com/ys3vbRD.jpeg",
+			"https://i.imgur.com/LX9ct1l.jpeg",
+			"https://i.imgur.com/brBd93b.jpeg",
+			"https://i.imgur.com/2IVmv9r.jpeg",
+			"https://i.imgur.com/UMPzGeg.jpeg",
+			"https://i.imgur.com/ePqSJ3N.jpeg",
+			"https://i.imgur.com/vEjJhjv.jpeg",
+			"https://i.imgur.com/L7ZFzJp.jpeg",
+			"https://i.imgur.com/pQjy5oy.jpeg",
+			"https://i.imgur.com/7VgikGg.jpeg",
+			"https://i.imgur.com/KwG0HnY.jpeg",
+			"https://i.imgur.com/kRa5K2v.jpeg"
+		]	
+	},
+	{		
+		chNum: 265,	
+		title: "Ch. chap 233",	
+		images: [	
+			"https://i.imgur.com/n8lZudS.jpeg",
+			"https://i.imgur.com/wrnYNm2.jpeg",
+			"https://i.imgur.com/MBzohub.jpeg",
+			"https://i.imgur.com/J78vpLd.jpeg",
+			"https://i.imgur.com/Veh0v10.jpeg",
+			"https://i.imgur.com/SZhytnm.jpeg",
+			"https://i.imgur.com/txjmaqv.jpeg",
+			"https://i.imgur.com/wVysmA0.jpeg",
+			"https://i.imgur.com/NqlEbYr.jpeg",
+			"https://i.imgur.com/l4Jd4Fy.jpeg",
+			"https://i.imgur.com/i0Y19MS.jpeg",
+			"https://i.imgur.com/GftcQIn.jpeg",
+			"https://i.imgur.com/TbUaEIO.jpeg",
+			"https://i.imgur.com/DGWEQby.jpeg",
+			"https://i.imgur.com/fNv54QB.jpeg"
+		]	
 	}
 ];
