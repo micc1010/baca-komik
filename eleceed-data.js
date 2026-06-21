@@ -20045,7 +20045,7 @@ const chapters_eleceed = [
 	},
 	{		
 		chNum: 405,	
-		title: "Ch. chap 404",	
+		title: "Ch. 404",	
 		images: [	
 			"https://i.imgur.com/OY0QbjU.jpeg",
 			"https://i.imgur.com/loK5XHK.jpeg",
@@ -20094,7 +20094,7 @@ const chapters_eleceed = [
 	},
 	{		
 		chNum: 406,	
-		title: "Ch. chap 405",	
+		title: "Ch. 405",	
 		images: [	
 			"https://i.imgur.com/QJIR0oe.jpeg",
 			"https://i.imgur.com/TQCoGOC.jpeg",
@@ -20121,7 +20121,7 @@ const chapters_eleceed = [
 	},
 	{		
 		chNum: 407,	
-		title: "Ch. chap 406",	
+		title: "Ch. 406",	
 		images: [	
 			"https://i.imgur.com/2srwy8G.jpeg",
 			"https://i.imgur.com/gGCFrpA.jpeg",

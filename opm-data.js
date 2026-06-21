@@ -8214,7 +8214,7 @@ const chapters_opm = [
 	},
 	{		
 		chNum: 264,	
-		title: "Ch. chap 232",	
+		title: "Ch. 232",	
 		images: [	
 			"https://i.imgur.com/fSnNOm6.jpeg",
 			"https://i.imgur.com/rnU4LSX.jpeg",
@@ -8237,7 +8237,7 @@ const chapters_opm = [
 	},
 	{		
 		chNum: 265,	
-		title: "Ch. chap 233",	
+		title: "Ch. 233",	
 		images: [	
 			"https://i.imgur.com/n8lZudS.jpeg",
 			"https://i.imgur.com/wrnYNm2.jpeg",
