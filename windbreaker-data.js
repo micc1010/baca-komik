@@ -43273,6 +43273,5 @@ const chapters_windbreaker = [
 		images: [	
 			"https://i.imgur.com/JZsxXZy.png"
 		]	
-	},
-
+	}
 ]
