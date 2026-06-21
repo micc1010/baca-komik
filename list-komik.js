@@ -23,5 +23,11 @@ const comics = [
         title: "Mercenary Enrollment",
         poster: "https://i.imgur.com/9CAAT1E.jpeg",
         desc: "Yu Ijin adalah satu-satunya yang selamat dari kecelakaan pesawat saat dia masih kecil. Setelah menjadi tentara bayaran untuk bertahan hidup selama 10 tahun, ia kembali ke keluarganya di kampung halamannya.",
+    },
+    {
+        id: "wind-breaker",
+        title: "Wind Breaker",
+        poster: "https://i.imgur.com/5QUi3nE.png",
+        desc: "Jay adalah presiden siswa SMA Sunny. Dia tidak hanya seorang siswa yang cerdas tetapi seorang pengendara sepeda yang memiliki teknik tingkat tinggi. Saat Anda mengikuti sepedanya, Anda akan bertemu dengan teman, cinta, dan petualangannya. Bertemu dengan para monster yang juga memiliki kemampuan sepeda yang luar biasa.",
     }
 ];
